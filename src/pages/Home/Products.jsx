@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
+import ReactLoading from 'react-loading';
 import { Link, useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
-import ReactLoading from 'react-loading';
-
 import api from '../../utils/api';
 
 const Wrapper = styled.div`

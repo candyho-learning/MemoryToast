@@ -1,6 +1,5 @@
 import { useContext } from 'react';
 import styled from 'styled-components';
-
 import { CartContext } from '../../context/cartContext';
 import trash from './trash.png';
 

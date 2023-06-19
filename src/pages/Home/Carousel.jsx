@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-
 import api from '../../utils/api';
 
 const Wrapper = styled.div`

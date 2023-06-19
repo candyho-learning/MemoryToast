@@ -1,12 +1,11 @@
-import { useEffect, useRef, useState, useContext } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-
-import api from '../../utils/api';
-import tappay from '../../utils/tappay';
+import Button from '../../components/Button';
 import { AuthContext } from '../../context/authContext';
 import { CartContext } from '../../context/cartContext';
-import Button from '../../components/Button';
+import api from '../../utils/api';
+import tappay from '../../utils/tappay';
 import Cart from './Cart';
 
 const Wrapper = styled.div`

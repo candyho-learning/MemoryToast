@@ -1,11 +1,11 @@
 import {
   createContext,
-  useState,
-  useEffect,
   useCallback,
+  useEffect,
+  useState,
 } from 'react';
-import fb from '../utils/fb';
 import api from '../utils/api';
+import fb from '../utils/fb';
 
 export const AuthContext = createContext({
   isLogin: false,

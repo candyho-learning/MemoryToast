@@ -8,13 +8,12 @@ function insertFBScript() {
   fbScriptTag.setAttribute('src', FB_SCRIPT_SRC);
   document.head.appendChild(fbScriptTag);
 }
-
 const fb = {
   init() {
     return new Promise((resolve) => {
       window.fbAsyncInit = () => {
         window.FB.init({
-          appId: process.env.REACT_APP_FACEBOOK_ID,
+          appId: import.meta.env.VITE_FACEBOOK_ID,
           cookie: true,
           xfbml: true,
           version: 'v10.0',
