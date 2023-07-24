@@ -1,15 +1,14 @@
-import { useEffect, useState, useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
-
-import logo from './logo.png';
-import search from './search.png';
-import cart from './cart.png';
-import cartMobile from './cart-mobile.png';
-import profile from './profile.png';
-import profileMobile from './profile-mobile.png';
 import { AuthContext } from '../../context/authContext';
 import { CartContext } from '../../context/cartContext';
+import cartMobile from './cart-mobile.png';
+import cart from './cart.png';
+import logo from './logo.png';
+import profileMobile from './profile-mobile.png';
+import profile from './profile.png';
+import search from './search.png';
 
 const Wrapper = styled.div`
   position: fixed;

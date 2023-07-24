@@ -1,5 +1,5 @@
-import styled from 'styled-components';
 import ReactLoading from 'react-loading';
+import styled from 'styled-components';
 
 const Wrapper = styled.button`
   position: relative;
@@ -31,7 +31,7 @@ const Loading = styled(ReactLoading)`
   top: 18px;
 `;
 
-export function Button({ children, loading, onClick, ...props }) {
+function Button({ children, loading, onClick, ...props }) {
   const handleClick = () => {
     if (loading) return;
     onClick();
@@ -50,3 +50,5 @@ export function Button({ children, loading, onClick, ...props }) {
     </Wrapper>
   )
 }
+
+export default Button;

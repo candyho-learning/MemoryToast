@@ -1,7 +1,6 @@
 import styled from 'styled-components';
-
-import line from './line.png';
 import facebook from './facebook.png';
+import line from './line.png';
 import twitter from './twitter.png';
 
 const Wrapper = styled.div`

@@ -1,7 +1,6 @@
 import { useContext } from 'react';
-import styled from 'styled-components';
 import ReactLoading from 'react-loading';
-
+import styled from 'styled-components';
 import { AuthContext } from '../../context/authContext';
 
 const Wrapper = styled.div`
