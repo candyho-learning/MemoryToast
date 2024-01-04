@@ -5,6 +5,7 @@ const useProducts = ({ keyword, category }) => {
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [nextPaging, setNextPaging] = useState(0);
+  const [shouldReset, setShouldReset] = useState(false);
 
   async function fetchProducts() {
     if (nextPaging === undefined) return;
@@ -13,6 +14,7 @@ const useProducts = ({ keyword, category }) => {
     const response = keyword
       ? await api.searchProducts(keyword, nextPaging)
       : await api.getProducts(category, nextPaging);
+
     if (nextPaging === 0) {
       setProducts(response.data);
     } else {
@@ -23,8 +25,18 @@ const useProducts = ({ keyword, category }) => {
   }
 
   useEffect(() => {
-    fetchProducts();
+    setProducts([]);
+    setNextPaging(0);
+    setShouldReset(true);
   }, [keyword, category]);
+
+  useEffect(() => {
+    if (!shouldReset) {
+      return;
+    }
+    fetchProducts();
+    setShouldReset(false);
+  }, [shouldReset]);
 
   return { products, loadMoreProducts: fetchProducts, isLoading };
 };
