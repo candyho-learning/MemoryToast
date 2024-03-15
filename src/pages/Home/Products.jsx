@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
-import ReactLoading from 'react-loading';
-import { Link, useSearchParams } from 'react-router-dom';
-import styled from 'styled-components';
-import api from '../../utils/api';
+import ReactLoading from "react-loading";
+import { Link, useSearchParams } from "react-router-dom";
+import styled from "styled-components";
+
+import useInfiniteScroll from "../../utils/hooks/useInfiniteScroll";
+import useProducts from "../../utils/hooks/useProducts";
 
 const Wrapper = styled.div`
   max-width: 1200px;
@@ -97,50 +98,16 @@ const Loading = styled(ReactLoading)`
 `;
 
 function Products() {
-  const [products, setProducts] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
   const [searchParams] = useSearchParams();
 
-  const keyword = searchParams.get('keyword');
-  const category = searchParams.get('category') || 'all';
+  const keyword = searchParams.get("keyword");
+  const category = searchParams.get("category") || "all";
 
-  useEffect(() => {
-    let nextPaging = 0;
-    let isFetching = false;
-
-    async function fetchProducts() {
-      isFetching = true;
-      setIsLoading(true);
-      const response = keyword
-        ? await api.searchProducts(keyword, nextPaging)
-        : await api.getProducts(category, nextPaging);
-      if (nextPaging === 0) {
-        setProducts(response.data);
-      } else {
-        setProducts((prev) => [...prev, ...response.data]);
-      }
-      nextPaging = response.next_paging;
-      isFetching = false;
-      setIsLoading(false);
-    }
-
-    async function scrollHandler() {
-      if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
-        if (nextPaging === undefined) return;
-        if (isFetching) return;
-
-        fetchProducts();
-      }
-    }
-
-    fetchProducts();
-
-    window.addEventListener('scroll', scrollHandler);
-
-    return () => {
-      window.removeEventListener('scroll', scrollHandler);
-    };
-  }, [keyword, category]);
+  const { products, loadMoreProducts, isLoading } = useProducts({
+    keyword,
+    category,
+  });
+  useInfiniteScroll(loadMoreProducts);
 
   return (
     <Wrapper>
