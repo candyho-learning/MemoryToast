@@ -1,19 +1,39 @@
-import React, { useState, Fragment, useEffect } from 'react';
+import React, { useState, Fragment, useEffect, useRef } from 'react';
 import Wheel from '@uiw/react-color-wheel';
 import { hsvaToHex } from '@uiw/color-convert';
 
 function ColorPicker() {
   const [hsva, setHsva] = useState({ h: 214, s: 43, v: 90, a: 1 });
-  const [colorName, setColorName] = useState(''); //儲存顏色的名字
+  const [colorName, setColorName] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    const setColor = async () => {
-      const colorName = await getColorNameFromHSV();
-      setColorName(colorName); //在這裡設置顏色名稱的狀態
+    let timerId;
+    if (isLoading) return;
+    setIsLoading(true);
+    timerId = setTimeout(async () => {
+      console.log('open')
+      
+      const colorData = await getColorDataFromHSV();
+      const colorName = colorData.name.value;
+      const colorRGB = colorData.rgb
+      setColorName(colorName);
+      setIsLoading(false);
+    }, 40);
+
+    return () => {
+      clearTimeout(timerId);
     };
-    setColor();
   }, [hsva]);
-  async function getColorNameFromHSV() {
+  // useEffect(() => {
+  //   const setColor = async () => {
+  //     const colorData = await getColorDataFromHSV();
+  //     const colorName = colorData.name.value
+  //     console.log(colorData.name.value,colorData.rgb)
+  //   };
+  //   setColor();
+  // }, [hsva]);
+  async function getColorDataFromHSV() {
     const hsvQueryString = `hsv=${hsva.h},${hsva.s},${hsva.v}`;
     const apiUrl = `https://www.thecolorapi.com/id?${hsvQueryString}`;
 
@@ -26,7 +46,7 @@ function ColorPicker() {
       }
 
       const data = await response.json();
-      return data.name.value;
+      return data;
     } catch (error) {
       console.error('Error fetching data:', error);
       return null;
