@@ -1,10 +1,10 @@
-import React, { useState, Fragment, useEffect } from 'react';
-import Wheel from '@uiw/react-color-wheel';
-import { hsvaToHex } from '@uiw/color-convert';
+import React, { useState, Fragment, useEffect } from "react";
+import Wheel from "@uiw/react-color-wheel";
+import { hsvaToHex } from "@uiw/color-convert";
 
-function ColorPicker() {
+function ColorPicker({ setColorName, colorName }) {
   const [hsva, setHsva] = useState({ h: 214, s: 43, v: 90, a: 1 });
-  const [colorName, setColorName] = useState(''); //儲存顏色的名字
+  // const [colorName, setColorName] = useState(''); //儲存顏色的名字
 
   useEffect(() => {
     const setColor = async () => {
@@ -28,7 +28,7 @@ function ColorPicker() {
       const data = await response.json();
       return data.name.value;
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error("Error fetching data:", error);
       return null;
     }
   }
@@ -41,7 +41,7 @@ function ColorPicker() {
       />
       <div
         style={{
-          width: '100%',
+          width: "100%",
           height: 34,
           marginTop: 20,
           background: hsvaToHex(hsva),
