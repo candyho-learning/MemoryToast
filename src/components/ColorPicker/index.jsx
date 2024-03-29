@@ -16,7 +16,8 @@ function ColorPicker() {
       const colorData = await getColorDataFromHSV();
       isLoading.current= false
       const colorName = colorData.name.value; //color name
-      const colorRGB = colorData.rgb //rgb color code
+      const colorRGB = colorData.rgb.value //rgb color code
+      console.log(colorName, colorRGB);
       setColorName(colorName);
     }, 50);
 
