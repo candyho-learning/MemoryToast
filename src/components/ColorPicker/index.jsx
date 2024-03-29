@@ -5,34 +5,26 @@ import { hsvaToHex } from '@uiw/color-convert';
 function ColorPicker() {
   const [hsva, setHsva] = useState({ h: 214, s: 43, v: 90, a: 1 });
   const [colorName, setColorName] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const isLoading = useRef(false);
 
   useEffect(() => {
     let timerId;
-    if (isLoading) return;
-    setIsLoading(true);
+    if (isLoading.current) return;
+    
     timerId = setTimeout(async () => {
-      console.log('open')
-      
+      isLoading.current= true
       const colorData = await getColorDataFromHSV();
-      const colorName = colorData.name.value;
-      const colorRGB = colorData.rgb
+      isLoading.current= false
+      const colorName = colorData.name.value; //color name
+      const colorRGB = colorData.rgb //rgb color code
       setColorName(colorName);
-      setIsLoading(false);
-    }, 40);
+    }, 50);
 
     return () => {
       clearTimeout(timerId);
     };
   }, [hsva]);
-  // useEffect(() => {
-  //   const setColor = async () => {
-  //     const colorData = await getColorDataFromHSV();
-  //     const colorName = colorData.name.value
-  //     console.log(colorData.name.value,colorData.rgb)
-  //   };
-  //   setColor();
-  // }, [hsva]);
+ 
   async function getColorDataFromHSV() {
     const hsvQueryString = `hsv=${hsva.h},${hsva.s},${hsva.v}`;
     const apiUrl = `https://www.thecolorapi.com/id?${hsvQueryString}`;
