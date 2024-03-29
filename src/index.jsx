@@ -6,6 +6,7 @@ import Home from './pages/Home';
 import Product from './pages/Product';
 import Profile from './pages/Profile';
 import ThankYou from './pages/ThankYou';
+import ColorPicker from './components/ColorPicker';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
