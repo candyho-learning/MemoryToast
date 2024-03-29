@@ -7,6 +7,7 @@ import Product from "./pages/Product";
 import Profile from "./pages/Profile";
 import ThankYou from "./pages/ThankYou";
 import LoginWindow from "./components/LoginWindow";
+import SignUpWindow from "./components/SignUpWindow";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
@@ -18,7 +19,9 @@ root.render(
         <Route path="products/:id" element={<Product />} />
         <Route path="checkout" element={<Checkout />} />
         {/* <Route path="thankyou" element={<ThankYou />} /> */}
-        <Route path="thankyou" element={<LoginWindow />} />
+        {/* <Route path="thankyou" element={<LoginWindow />} /> */}
+        <Route path="thankyou" element={<SignUpWindow />} />
+
         <Route path="profile" element={<Profile />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>

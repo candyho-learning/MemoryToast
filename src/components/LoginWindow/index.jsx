@@ -1,18 +1,19 @@
 import styled from "styled-components";
 import { AuthContext } from "../../context/authContext";
 import { useState, useContext } from "react";
-const BackgroundMask = styled.div`
+export const BackgroundMask = styled.div`
   background: radial-gradient(circle, #837568 50%, #313538);
-
   height: 100vh;
   width: 100vw;
-  position: aboluste;
+  position: absolute;
+  z-index: 10;
   inset: 0;
   padding: 70px 10px;
+  margin-top: 100px;
   opacity: 1;
 `;
 
-const LoginBox = styled.div`
+export const LoginBox = styled.div`
   display: flex;
   background-color: white;
   border: none;
@@ -77,7 +78,7 @@ const LoginBox = styled.div`
     }
   }
 `;
-const Input = styled.input`
+export const Input = styled.input`
   margin: 10px 0;
   width: 100%;
   border: none;
@@ -86,16 +87,16 @@ const Input = styled.input`
   color: white;
 `;
 
-const FormTitle = styled.h1`
+export const FormTitle = styled.h1`
   font-size: 52px;
-  margin-top: 150px;
+  margin-top: 120px;
   margin-bottom: 30px;
   text-align: left;
   font-weight: 800;
   line-height: 1.2;
 `;
 
-const Button = styled.button`
+export const Button = styled.button`
   width: 100px;
   margin: 20px auto;
   background: linear-gradient(135deg, #9c8c7c 30%, #b59f8d);
@@ -114,6 +115,9 @@ export default function LoginWindow() {
   const [userPassword, setUserPassword] = useState("");
   const { login } = useContext(AuthContext);
 
+  function handleSubmit() {
+    console.log(userEmail, userPassword);
+  }
   return (
     <BackgroundMask>
       <LoginBox>
@@ -125,8 +129,8 @@ export default function LoginWindow() {
           </p>
         </div>
         <div className="right">
-          {/* Add formo action: login API with username and password */}
-          <form action="">
+          {/* TODO: Add form action: login API with username and password */}
+          <form onSubmit={handleSubmit}>
             <h3>WELCOME BACK...</h3>
             <Input
               type="email"
