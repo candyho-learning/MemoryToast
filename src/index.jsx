@@ -7,13 +7,14 @@ import Product from './pages/Product';
 import Profile from './pages/Profile';
 import ThankYou from './pages/ThankYou';
 import ColorPicker from './components/ColorPicker';
+import ScratchCard from './components/ScratchCard';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 root.render(
   <BrowserRouter>
     <Routes>
-      <Route path="/" element={<App />}>
+      <Route path="/" element={<ScratchCard />}>
         <Route index element={<Home />} />
         <Route path="products/:id" element={<Product />} />
         <Route path="checkout" element={<Checkout />} />
