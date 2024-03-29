@@ -1,6 +1,8 @@
 import styled from "styled-components";
 import { AuthContext } from "../../context/authContext";
 import { useState, useContext } from "react";
+import logo from "../Header/logo.png";
+
 export const BackgroundMask = styled.div`
   background: radial-gradient(circle, #837568 50%, #313538);
   height: 100vh;
@@ -50,12 +52,18 @@ export const LoginBox = styled.div`
     height: 100%;
     width: 40%;
 
+    img {
+      height: auto;
+      width: 70%;
+      margin: 40px auto 0 auto;
+    }
+
     form {
       display: flex;
       flex-direction: column;
-      margin-top: 150px;
+      margin-top: 60px;
       color: #313538;
-
+      algin-items: center;
       & * {
         height: 30px;
         border-radius: 20px;
@@ -115,7 +123,8 @@ export default function LoginWindow() {
   const [userPassword, setUserPassword] = useState("");
   const { login } = useContext(AuthContext);
 
-  function handleSubmit() {
+  function handleSubmit(e) {
+    e.preventDefault();
     console.log(userEmail, userPassword);
   }
   return (
@@ -130,6 +139,8 @@ export default function LoginWindow() {
         </div>
         <div className="right">
           {/* TODO: Add form action: login API with username and password */}
+          <img src={logo} />
+
           <form onSubmit={handleSubmit}>
             <h3>WELCOME BACK...</h3>
             <Input
