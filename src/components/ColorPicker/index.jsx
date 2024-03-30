@@ -8,7 +8,7 @@ const ColorPickerWrapper = styled.div`
 const PanetoneWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  width: 150px;
+  width: 165px;
 `;
 const ColorDiv = styled.div`
   width: 100%;
@@ -28,6 +28,8 @@ const WhiteDiv = styled.div`
     font-size: 20px;
   }
   p {
+    display: block;
+    width: 100%;
     margin: 0 !important;
     color: black;
     font-size: 14px;
