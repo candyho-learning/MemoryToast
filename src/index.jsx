@@ -20,8 +20,8 @@ root.render(
         <Route path="products/:id" element={<Product />} />
         <Route path="checkout" element={<Checkout />} />
         {/* <Route path="thankyou" element={<ThankYou />} /> */}
-        {/* <Route path="thankyou" element={<LoginWindow />} /> */}
-        <Route path="thankyou" element={<SignUpWindow />} />
+        <Route path="thankyou" element={<LoginWindow />} />
+        {/* <Route path="thankyou" element={<SignUpWindow />} /> */}
 
         <Route path="profile" element={<Profile />} />
         <Route path="myluckycolor" element={<LuckyColorLanding />} />

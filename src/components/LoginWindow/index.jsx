@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { AuthContext } from "../../context/authContext";
 import { useState, useContext } from "react";
 import logo from "../Header/logo.png";
+import api from "../../utils/api";
 
 export const BackgroundMask = styled.div`
   background: radial-gradient(circle, #837568 50%, #313538);
@@ -123,9 +124,34 @@ export default function LoginWindow() {
   const [userPassword, setUserPassword] = useState("");
   const { login } = useContext(AuthContext);
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
     console.log(userEmail, userPassword);
+
+    const loginData = {
+      provider: "native",
+      email: userEmail,
+      password: userPassword,
+      access_token: "",
+    };
+
+    const loginResult = await api.signin(loginData);
+    console.log(loginResult);
+
+    // try {
+    //   const response = await fetch("http://50.16.87.98/api/1.0/user/signin", {
+    //     method: "POST",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //     body: JSON.stringify(loginData),
+    //   });
+
+    //   const data = await response.json();
+    //   console.log(data);
+    // } catch (err) {
+    //   console.error(err);
+    // }
   }
   return (
     <BackgroundMask>

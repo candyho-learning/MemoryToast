@@ -46,6 +46,21 @@ export const AuthContextProvider = ({ children }) => {
     checkAuthStatus();
   }, []);
 
+  // const login = async () => {
+  //   setLoading(true);
+  //   // TODO: Send data to Login API
+  //   const response = await fb.login();
+  //   if (response.status === "connected") {
+  //     const tokenFromServer = handleLoginResponse(response);
+  //     setLoading(false);
+  //     return tokenFromServer;
+  //   } else {
+  //     window.localStorage.removeItem("jwtToken");
+  //     setLoading(false);
+  //     return null;
+  //   }
+  // };
+
   const login = async () => {
     setLoading(true);
     // TODO: Send data to Login API

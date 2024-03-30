@@ -1,6 +1,6 @@
 const api = {
-  // hostname: "http://50.16.87.98/api/1.0",
-  hostname: "https://api.appworks-school.tw/api/1.0",
+  hostname: "http://50.16.87.98/api/1.0",
+  // hostname: "https://api.appworks-school.tw/api/1.0",
   async getProducts(category, paging) {
     const response = await fetch(
       `${this.hostname}/products/${category}?paging=${paging}`
@@ -32,15 +32,23 @@ const api = {
     });
     return await response.json();
   },
-  async signin(data) {
-    const response = await fetch(`${this.hostname}/user/signin`, {
-      body: JSON.stringify(data),
-      headers: new Headers({
-        "Content-Type": "application/json",
-      }),
-      method: "POST",
-    });
-    return await response.json();
+  async signin(loginData) {
+    try {
+      const response = await fetch(`${this.hostname}/user/signin`, {
+        body: JSON.stringify(loginData),
+        headers: new Headers({
+          "Content-Type": "application/json",
+        }),
+        method: "POST",
+      });
+      if (!response.ok) {
+        throw new Error("sign in failed");
+      }
+      const data = await response.json();
+      return data;
+    } catch (err) {
+      console.error(err);
+    }
   },
   async getProfile(jwtToken) {
     const response = await fetch(`${this.hostname}/user/profile`, {
