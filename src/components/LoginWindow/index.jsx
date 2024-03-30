@@ -135,8 +135,10 @@ export default function LoginWindow() {
       access_token: "",
     };
 
-    const loginResult = await api.signin(loginData);
-    console.log(loginResult);
+    const { data } = await api.signin(loginData);
+    console.log(data);
+    localStorage.setItem("accessToken", JSON.stringify(data.access_token));
+    localStorage.setItem("userProfile", JSON.stringify(data.user));
 
     // try {
     //   const response = await fetch("http://50.16.87.98/api/1.0/user/signin", {

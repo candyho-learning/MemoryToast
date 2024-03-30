@@ -50,14 +50,19 @@ const api = {
       console.error(err);
     }
   },
-  async getProfile(jwtToken) {
-    const response = await fetch(`${this.hostname}/user/profile`, {
-      headers: new Headers({
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${jwtToken}`,
-      }),
-    });
-    return await response.json();
+  async getProfile(token) {
+    try {
+      const response = await fetch(`${this.hostname}/user/profile`, {
+        headers: new Headers({
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        }),
+      });
+      if (!response.ok) throw new Error("token not valid");
+      return await response.json();
+    } catch (err) {
+      console.error(err);
+    }
   },
 };
 
