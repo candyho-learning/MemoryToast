@@ -118,9 +118,10 @@ export default function SignUpWindow() {
                     : formState[item.name]
                 }
                 key={item.name}
+                required
               />
             ))}
-            <Select name="gender" onChange={handleFormChange}>
+            <Select name="gender" onChange={handleFormChange} required>
               <option value="">Select Gender</option>
               <option value="male">Male</option>
               <option value="female">Female</option>

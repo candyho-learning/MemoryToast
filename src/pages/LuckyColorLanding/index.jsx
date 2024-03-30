@@ -12,7 +12,7 @@ const LandingPageWrapper = styled.div`
 
   h1 {
     font-size: 35px;
-    margin: 100px 0;
+    margin: 60px 0;
   }
 
   .recommended-products-section {

@@ -155,6 +155,7 @@ export default function LoginWindow() {
               type="password"
               name="password"
               placeholder="Your password..."
+              required
               onChange={(e) => {
                 setUserPassword(e.target.value);
               }}
