@@ -12,7 +12,7 @@ const LandingPageWrapper = styled.div`
 
   h1 {
     font-size: 35px;
-    margin: 50px 0;
+    margin: 100px 0;
   }
 
   .recommended-products-section {
@@ -60,7 +60,7 @@ const Track = styled.div`
   position: absolute;
   white-space: nowrap;
   will-change: transform;
-  background-color: pink;
+  background-color: #8b572a;
   height: 70px;
   line-height: 2;
   color: white;
