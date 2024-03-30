@@ -1,23 +1,24 @@
-import React, { useState, Fragment, useEffect, useRef } from 'react';
-import Wheel from '@uiw/react-color-wheel';
-import { hsvaToHex } from '@uiw/color-convert';
+import React, { useState, Fragment, useEffect, useRef } from "react";
+import Wheel from "@uiw/react-color-wheel";
+import { hsvaToHex } from "@uiw/color-convert";
 
-function ColorPicker() {
+function ColorPicker({ setColorName, colorName, setColorCode }) {
   const [hsva, setHsva] = useState({ h: 214, s: 43, v: 90, a: 1 });
-  const [colorName, setColorName] = useState('');
+  // const [colorName, setColorName] = useState("");
   const isLoading = useRef(false);
 
   useEffect(() => {
     let timerId;
     if (isLoading.current) return;
-    
+
     timerId = setTimeout(async () => {
-      isLoading.current= true
+      isLoading.current = true;
       const colorData = await getColorDataFromHSV();
-      isLoading.current= false
+      isLoading.current = false;
       const colorName = colorData.name.value; //color name
-      const colorRGB = colorData.rgb.value //rgb color code
+      const colorRGB = colorData.rgb.value; //rgb color code
       console.log(colorName, colorRGB);
+      setColorCode(colorRGB);
       setColorName(colorName);
     }, 50);
 
@@ -25,7 +26,7 @@ function ColorPicker() {
       clearTimeout(timerId);
     };
   }, [hsva]);
- 
+
   async function getColorDataFromHSV() {
     const hsvQueryString = `hsv=${hsva.h},${hsva.s},${hsva.v}`;
     const apiUrl = `https://www.thecolorapi.com/id?${hsvQueryString}`;
@@ -41,7 +42,7 @@ function ColorPicker() {
       const data = await response.json();
       return data;
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error("Error fetching data:", error);
       return null;
     }
   }
@@ -54,7 +55,7 @@ function ColorPicker() {
       />
       <div
         style={{
-          width: '100%',
+          width: "100%",
           height: 34,
           marginTop: 20,
           background: hsvaToHex(hsva),
