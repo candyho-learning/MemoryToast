@@ -2,9 +2,9 @@ import React, { useState, Fragment, useEffect, useRef } from "react";
 import Wheel from "@uiw/react-color-wheel";
 import { hsvaToHex } from "@uiw/color-convert";
 
-function ColorPicker({ setColorName, colorName }) {
+function ColorPicker({ setColorName, colorName, setColorCode }) {
   const [hsva, setHsva] = useState({ h: 214, s: 43, v: 90, a: 1 });
-  const [colorName, setColorName] = useState("");
+  // const [colorName, setColorName] = useState("");
   const isLoading = useRef(false);
 
   useEffect(() => {
@@ -18,6 +18,7 @@ function ColorPicker({ setColorName, colorName }) {
       const colorName = colorData.name.value; //color name
       const colorRGB = colorData.rgb.value; //rgb color code
       console.log(colorName, colorRGB);
+      setColorCode(colorRGB);
       setColorName(colorName);
     }, 50);
 

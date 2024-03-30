@@ -91,7 +91,7 @@ export default function SignUpWindow() {
           <ColorPicker
             setColorName={setLuckyColorName}
             colorName={luckyColorName}
-            style={{ display: showColorPicker ? "block" : "none" }}
+            setColorCode={setLuckyColorCode}
           />
           <button
             style={{ height: "30px", marginTop: "30px" }}
