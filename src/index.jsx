@@ -8,6 +8,7 @@ import Profile from "./pages/Profile";
 import ThankYou from "./pages/ThankYou";
 import LoginWindow from "./components/LoginWindow";
 import SignUpWindow from "./components/SignUpWindow";
+import ColorPicker from "./components/ColorPicker";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
