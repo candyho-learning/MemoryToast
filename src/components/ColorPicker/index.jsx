@@ -17,7 +17,6 @@ function ColorPicker({ setColorName, colorName, setColorCode }) {
       isLoading.current = false;
       const colorName = colorData.name.value; //color name
       const colorRGB = colorData.rgb.value; //rgb color code
-      console.log(colorName, colorRGB);
       setColorCode(colorRGB);
       setColorName(colorName);
     }, 50);

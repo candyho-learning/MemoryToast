@@ -8,6 +8,7 @@ import Profile from "./pages/Profile";
 import ThankYou from "./pages/ThankYou";
 import LoginWindow from "./components/LoginWindow";
 import SignUpWindow from "./components/SignUpWindow";
+import LuckyColorLanding from "./pages/LuckyColorLanding";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
@@ -23,6 +24,8 @@ root.render(
         <Route path="thankyou" element={<SignUpWindow />} />
 
         <Route path="profile" element={<Profile />} />
+        <Route path="myluckycolor" element={<LuckyColorLanding />} />
+
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
     </Routes>
