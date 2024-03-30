@@ -7,6 +7,7 @@ import Product from './pages/Product';
 import Profile from './pages/Profile';
 import ThankYou from './pages/ThankYou';
 import ColorPicker from './components/ColorPicker';
+import ScratchCard from './components/ScratchCard';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
