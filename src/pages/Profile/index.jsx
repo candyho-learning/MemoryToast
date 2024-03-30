@@ -2,6 +2,7 @@ import { useContext } from 'react';
 import ReactLoading from 'react-loading';
 import styled from 'styled-components';
 import { AuthContext } from '../../context/authContext';
+import './index.css';
 
 const Wrapper = styled.div`
   padding: 60px 20px;
@@ -39,27 +40,44 @@ function Profile() {
 
   const renderContent = () => {
     if (loading) return <Loading type="spinningBubbles" color="#313538" />;
-    if (isLogin) return (
-      <>
-        <Photo src={user.picture} />
-        <Content>{user.name}</Content>
-        <Content>{user.email}</Content>
-        <LogoutButton
-          onClick={logout}
-        >
-          登出
-        </LogoutButton>
-      </>
-    );
-    return (
-      <LogoutButton onClick={login}>登入</LogoutButton>
-    );
-  }
+    // if (isLogin) return (
+    //   <>
+    //     <Photo src={user.picture} />
+    //     <Content>{user.name}</Content>
+    //     <Content>{user.email}</Content>
+    //   </>
+    // );
+    // return (
+    //   <LogoutButton onClick={login}>登入</LogoutButton>
+    // );
+  };
   return (
-    <Wrapper>
-      <Title>會員基本資訊</Title>
-      {renderContent()}
-    </Wrapper>
+    // <Wrapper>
+    //   {/* <Title>會員基本資訊</Title> */}
+    //   {renderContent()}
+    // </Wrapper>
+    <div>
+      <div className="profileWrapper">
+        <div className="memberWrpper">
+          <div className="memberPicWrapper">
+            <div className="memberPic">
+              <img
+                src="https://previews.123rf.com/images/virtosmedia/virtosmedia2302/virtosmedia230209170/197936185-portrait-of-a-beautiful-young-woman-lying-on-the-grass-with-flowers.jpg"
+                alt=""
+              />
+            </div>
+          </div>
+          <div className='membeInfoWrapper'>
+            <p>Name: </p>
+          </div>
+        </div>
+        <div className="funcWrapper">
+          <div>
+            <img src="/Icons_24px_Settings3x.png" alt="" />
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 
