@@ -1,4 +1,5 @@
 import styled, { keyframes } from "styled-components";
+import { Button } from "../../components/LoginWindow";
 
 const LandingPageWrapper = styled.div`
   display: flex;
@@ -95,6 +96,42 @@ const GalleryContainer = styled.div`
   }
 `;
 
+const GameSection = styled.div`
+  background-color: darkgrey;
+  width: 100%;
+  height: 400px;
+  margin-bottom: 30px;
+  position: relative;
+
+  button {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 15px 25px;
+    font-size: 24px;
+    text-align: center;
+    cursor: pointer;
+    outline: none;
+    color: #fff;
+    background-color: #04aa6d;
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 9px #999;
+
+    &: hover {
+      cursor: pointer;
+      background-color: #3e8e41;
+    }
+
+    &:active {
+      background-color: #3e8e41;
+      box-shadow: 0 5px #666;
+      transform: translateX(-50%) translateY(4px);
+    }
+  }
+`;
+
 const marqueeSentence = "Infinite Marquee with long sentence";
 
 export default function LuckyColorLanding() {
@@ -128,6 +165,9 @@ export default function LuckyColorLanding() {
       </div>
 
       <h1>刮刮樂遊戲 🎲</h1>
+      <GameSection>
+        <button>Start Game</button>
+      </GameSection>
     </LandingPageWrapper>
   );
 }
