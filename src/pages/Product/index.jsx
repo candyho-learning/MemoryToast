@@ -63,7 +63,7 @@ const ID = styled.div`
 
 const Price = styled.div`
   line-height: 36px;
-  margin-top: 40px;
+  margin-top: 10px;
   font-size: 30px;
   color: #3f3a3a;
   padding-bottom: 20px;
@@ -188,10 +188,58 @@ const Image = styled.img`
     }
   }
 `;
+const ReviewWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: end;
+  gap: 20px;
+`;
+const AvgStarGroup = styled.div`
+  position: relative;
+  width: 140px;
+  height: 20px;
+  margin-top: 10px;
+  display: flex;
+  gap: 10px;
+  opacity: 0.8;
+  justify-content: space-between;
+  img {
+    height: 100%;
+  }
+  .star {
+    width: 20px;
+    height: 20px;
+    background-size: cover;
+    clip-path: polygon(0 0, 20% 0, 20% 100%, 0 100%);
+    /* clip-path: polygon(0 0, 50% 0, 50% 100%, 0 100%) 50%*/
+  }
+
+  .empty-star {
+    position: absolute;
+    left: 0;
+    z-index: -1;
+    width: 20px;
+    height: 20px;
+  }
+`;
+
+const AvgRating = styled.div`
+  height: 20px;
+  display: flex;
+  gap: 10px;
+  padding-top: 2px;
+  span {
+    font-size: 14px;
+  }
+`;
 
 function Product() {
   const [product, setProduct] = useState();
   const { id } = useParams();
+  const [reviewData, setReviewData] = useState({
+    avgStar: 2.4,
+    totalComments: 50,
+  });
 
   useEffect(() => {
     async function getProduct() {
@@ -209,6 +257,44 @@ function Product() {
       <Details>
         <Title>{product.title}</Title>
         <ID>{product.id}</ID>
+        <ReviewWrapper>
+          <AvgStarGroup>
+            {[...Array(5)].map((_, index) => {
+              const { avgStar } = reviewData;
+              console.log(avgStar);
+              const starPercent =
+                avgStar > index && avgStar < index + 1
+                  ? (avgStar - index) * 100
+                  : avgStar < index
+                  ? 0
+                  : 100;
+              return (
+                <div key={index}>
+                  <img
+                    className="star"
+                    src="/public/icons/star.png"
+                    alt=""
+                    style={{
+                      clipPath: `polygon(0 0, ${starPercent}% 0, ${starPercent}% 100%, 0 100%)`,
+                    }}
+                  />
+                  <img
+                    className="empty-star"
+                    src="/public/icons/empty_star2.png"
+                    alt=""
+                    style={{ marginLeft: `${index * 30}px` }}
+                  />
+                </div>
+              );
+            })}
+          </AvgStarGroup>
+          <AvgRating>
+            <p>{reviewData.avgStar}</p>
+            <span>/</span>
+            <p>{reviewData.totalComments}</p>
+          </AvgRating>
+        </ReviewWrapper>
+
         <Price>TWD.{product.price}</Price>
         <ProductVariants product={product} />
         <Note>{product.note}</Note>
