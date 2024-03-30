@@ -76,6 +76,7 @@ export default function SignUpWindow() {
       colorCode: luckyColorName,
     });
   }, [luckyColorName]);
+  // TODO: Show and Hide color picker
   return (
     <DynamicBackgroundMask color={luckyColorCode}>
       <LoginBox>
