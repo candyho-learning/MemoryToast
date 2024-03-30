@@ -9,6 +9,7 @@ import ThankYou from "./pages/ThankYou";
 import LoginWindow from "./components/LoginWindow";
 import SignUpWindow from "./components/SignUpWindow";
 import ColorPicker from "./components/ColorPicker";
+import ScratchCard from "./components/ScratchCard";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 

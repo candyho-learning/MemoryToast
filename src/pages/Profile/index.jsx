@@ -3,11 +3,10 @@ import ReactLoading from 'react-loading';
 import styled from 'styled-components';
 import { AuthContext } from '../../context/authContext';
 import './index.css';
-
+import ScratchCard from '../../components/ScratchCard';
 const Loading = styled(ReactLoading)`
   margin-top: 50px;
 `;
-
 
 const ProfileWrapper = styled.div`
   width: 1280px;
@@ -110,7 +109,6 @@ const IconWrapper = styled.div`
   cursor: pointer;
 `;
 
-
 function Profile() {
   const { user, isLogin, login, logout, loading } = useContext(AuthContext);
   const servicesArr = [
@@ -147,7 +145,7 @@ function Profile() {
     // </Wrapper>
     <div>
       <ProfileWrapper>
-      <MemberWrapper>
+        <MemberWrapper>
           <MemberPicWrapper>
             <MemberPic>
               <Circle1 className="circle-1"></Circle1>
