@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import api from '../../utils/api';
@@ -10,6 +10,11 @@ const Wrapper = styled.div`
   padding: 65px 0 49px;
   display: flex;
   flex-wrap: wrap;
+  hr {
+    margin-top: 20px;
+    width: 100%;
+    background-color: #ccc;
+  }
 
   @media screen and (max-width: 1279px) {
     padding: 0 0 32px;
@@ -190,15 +195,28 @@ const Image = styled.img`
 `;
 const ReviewWrapper = styled.div`
   width: 100%;
+  height: 40px;
   display: flex;
+  margin-bottom: 20px;
   align-items: end;
   gap: 20px;
+  .score {
+    display: block;
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+  }
+  .reviews {
+    margin-left: 10px;
+    font-size: 20px;
+    letter-spacing: 1.5px;
+  }
 `;
 const AvgStarGroup = styled.div`
   position: relative;
   width: 140px;
   height: 20px;
-  margin-top: 10px;
+  margin-bottom: 2px;
   display: flex;
   gap: 10px;
   opacity: 0.8;
@@ -223,24 +241,85 @@ const AvgStarGroup = styled.div`
   }
 `;
 
-const AvgRating = styled.div`
-  height: 20px;
-  display: flex;
-  gap: 10px;
-  padding-top: 2px;
-  span {
-    font-size: 14px;
+const CommentWrapper = styled.div`
+  width: 100%;
+
+  .commentStar {
+    background-image: url('/icons/star.png');
+    height: 20px;
+    width: 20px;
+    background-size: cover;
+    opacity: 0;
+    cursor: pointer;
+    caret-color: transparent;
+  }
+  .commentEmptyStar {
+    z-index: -1;
+    position: absolute;
+    top: 0;
+    height: 20px;
+    width: 20px;
+    background-image: url('/icons/empty_star2.png');
+    background-size: cover;
+    cursor: pointer;
+    caret-color: transparent;
+  }
+  .commentStar:hover {
+    transform: scale(1.1); 
+    transition: transform 0.3s; 
+  }
+  .title {
+    height: 50px;
+    width: 100%;
+    line-height: 30px;
+    font-size: 20px;
+    letter-spacing: 4px;
+    color: #8b572a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  p {
+    margin-top: -2px;
+  }
+  .titleLeft {
+    display: flex;
+    gap: 20px;
+  }
+  .commentButton {
+    width: 200px;
+    height: 100%;
+    font-size: 18px;
+    background-color: #000;
+    color: #fff;
+    letter-spacing: 4px;
+    border: none;
   }
 `;
-
 function Product() {
   const [product, setProduct] = useState();
   const { id } = useParams();
-  const [reviewData, setReviewData] = useState({
+  const [feedbackReview, setFeedbackReview] = useState({
     avgStar: 2.4,
     totalComments: 50,
   });
-
+  const [star, setStar] = useState(0);
+  const starTimer = useRef(null);
+  const hoverStar = (index) => {
+    if (starTimer.current) {
+      clearTimeout(starTimer.current);
+    }
+    setStar(index + 1);
+  };
+  const leaveStar = () => {
+    if (starTimer.current) {
+      clearTimeout(starTimer.current);
+    }
+    starTimer.current = setTimeout(() => {
+      console.log('321');
+      setStar(0);
+    }, 80);
+  };
   useEffect(() => {
     async function getProduct() {
       const { data } = await api.getProduct(id);
@@ -258,9 +337,10 @@ function Product() {
         <Title>{product.title}</Title>
         <ID>{product.id}</ID>
         <ReviewWrapper>
+          <p className="score">{feedbackReview.avgStar}</p>
           <AvgStarGroup>
             {[...Array(5)].map((_, index) => {
-              const { avgStar } = reviewData;
+              const { avgStar } = feedbackReview;
               console.log(avgStar);
               const starPercent =
                 avgStar > index && avgStar < index + 1
@@ -287,12 +367,8 @@ function Product() {
                 </div>
               );
             })}
+            <p className="reviews">Reviews({feedbackReview.totalComments})</p>
           </AvgStarGroup>
-          <AvgRating>
-            <p>{reviewData.avgStar}</p>
-            <span>/</span>
-            <p>{reviewData.totalComments}</p>
-          </AvgRating>
         </ReviewWrapper>
 
         <Price>TWD.{product.price}</Price>
@@ -312,6 +388,37 @@ function Product() {
           <Image src={image} key={index} />
         ))}
       </Images>
+      <hr />
+      <CommentWrapper>
+        <div className="title">
+          <div className="titleLeft">
+            <p>評論</p>
+            <AvgStarGroup>
+              {[...Array(5)].map((_, index) => {
+                return (
+                  <div>
+                    <div
+                      key={index}
+                      className="commentStar"
+                      style={{ opacity: index < star ? '1' : 0 }}
+                      onMouseEnter={() => {
+                        hoverStar(index);
+                      }}
+                      onMouseLeave={leaveStar}
+                      onClick={() => {
+                        setStar(index + 1);
+                      }}
+                    ></div>
+                    <div key={index + 6} className="commentEmptyStar"></div>
+                  </div>
+                );
+              })}
+            </AvgStarGroup>
+          </div>
+
+          <button className="commentButton">評論商品</button>
+        </div>
+      </CommentWrapper>
     </Wrapper>
   );
 }
