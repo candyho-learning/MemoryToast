@@ -265,8 +265,8 @@ const CommentWrapper = styled.div`
     caret-color: transparent;
   }
   .commentStar:hover {
-    transform: scale(1.1); 
-    transition: transform 0.3s; 
+    transform: scale(1.1);
+    transition: transform 0.3s;
   }
   .title {
     height: 50px;
@@ -305,18 +305,18 @@ function Product() {
   });
   const [star, setStar] = useState(0);
   const starTimer = useRef(null);
-  const hoverStar = (index) => {
+  const checkStarTimer = () => {
     if (starTimer.current) {
       clearTimeout(starTimer.current);
     }
+  };
+  const hoverStar = (index) => {
+    checkStarTimer();
     setStar(index + 1);
   };
   const leaveStar = () => {
-    if (starTimer.current) {
-      clearTimeout(starTimer.current);
-    }
+    checkStarTimer();
     starTimer.current = setTimeout(() => {
-      console.log('321');
       setStar(0);
     }, 80);
   };
@@ -341,7 +341,6 @@ function Product() {
           <AvgStarGroup>
             {[...Array(5)].map((_, index) => {
               const { avgStar } = feedbackReview;
-              console.log(avgStar);
               const starPercent =
                 avgStar > index && avgStar < index + 1
                   ? (avgStar - index) * 100
