@@ -301,6 +301,7 @@ const CommentWrapper = styled.div`
     color: #fff;
     letter-spacing: 4px;
     border: none;
+    cursor: pointer;
   }
   .errMsg {
     font-size: 15px;
@@ -469,7 +470,10 @@ function Product() {
     });
   };
 
-  const sendReview = () => {
+  const sendReview = async() => {
+    if (!isLogin) {
+      setCheckLogin(true);
+    }
     if (star.number === 0) {
       setErrMsg('記得先給評分哦!');
       return;
@@ -478,8 +482,36 @@ function Product() {
       setErrMsg('記得留言再送出評論哦!');
       return;
     }
-    if (!isLogin) {
-      setCheckLogin(true);
+    const userProfile = JSON.parse(localStorage.getItem('userProfile'));
+const userId = userProfile.id;
+console.log(typeof userId);
+    try {
+      console.log({userId:userId,
+        productId: parseInt(id),
+        rate: star.clickedNumber,
+        comment: comment});
+      const response = await fetch(
+        `https://chouyu.site/api/1.0/comment/create`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            userId:userId,
+            productId: id,
+            rate: star.clickedNumber,
+            comment: comment
+          })
+        }
+      );
+      console.log(response,'成功');
+      //const data = await response.json();
+      console.log(data,'成功');
+      return data;
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      throw error;
     }
   };
 
@@ -594,7 +626,7 @@ function Product() {
               </div>
 
               <button className="commentButton" onClick={sendReview}>
-                發表評論
+              {isLogin ? '發表評論' : '請先登入'}
               </button>
             </div>
             <TextWrapper>
