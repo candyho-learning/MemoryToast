@@ -17,7 +17,7 @@ const Wrapper = styled.div`
   }
 `;
 
-const Product = styled(Link)`
+export const Product = styled(Link)`
   width: calc((100% - 120px) / 3);
   margin: 0 20px 50px;
   flex-shrink: 0;

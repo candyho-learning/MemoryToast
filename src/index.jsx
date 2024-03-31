@@ -8,8 +8,9 @@ import Profile from "./pages/Profile";
 import ThankYou from "./pages/ThankYou";
 import LoginWindow from "./components/LoginWindow";
 import SignUpWindow from "./components/SignUpWindow";
-import ColorPicker from "./components/ColorPicker";
-import ScratchCard from "./components/ScratchCard";
+import LuckyColorLanding from "./pages/LuckyColorLanding";
+
+import ProtectedComponent from "./components/ProtectedComponent/ProtectedComponent";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
@@ -20,11 +21,13 @@ root.render(
         <Route index element={<Home />} />
         <Route path="products/:id" element={<Product />} />
         <Route path="checkout" element={<Checkout />} />
-        {/* <Route path="thankyou" element={<ThankYou />} /> */}
-        <Route path="thankyou" element={<LoginWindow />} />
-        {/* <Route path="thankyou" element={<SignUpWindow />} /> */}
+        <Route path="thankyou" element={<ThankYou />} />
+        <Route path="login" element={<LoginWindow />} />
+        <Route path="signup" element={<SignUpWindow />} />
 
         <Route path="profile" element={<Profile />} />
+        <Route path="myluckycolor" element={<LuckyColorLanding />} />
+
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
     </Routes>

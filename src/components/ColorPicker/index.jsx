@@ -54,9 +54,8 @@ function ColorPicker({ setColorName, colorName, setColorCode }) {
       const colorData = await getColorDataFromHSV();
       isLoading.current = false;
       const colorName = colorData.name.value; //color name
-      const colorHEX = colorData.hex.value; //hex color code
-      setColorCode(colorHEX);
-      setHex(colorHEX);
+      const colorRGB = colorData.rgb.value; //rgb color code
+      setColorCode(colorRGB);
       setColorName(colorName);
     }, 50);
 

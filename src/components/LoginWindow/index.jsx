@@ -2,6 +2,8 @@ import styled from "styled-components";
 import { AuthContext } from "../../context/authContext";
 import { useState, useContext } from "react";
 import logo from "../Header/logo.png";
+import api from "../../utils/api";
+import { useNavigate, useLocation } from "react-router-dom";
 
 export const BackgroundMask = styled.div`
   background: radial-gradient(circle, #837568 50%, #313538);
@@ -121,12 +123,23 @@ export const Button = styled.button`
 export default function LoginWindow() {
   const [userEmail, setUserEmail] = useState("");
   const [userPassword, setUserPassword] = useState("");
-  const { login } = useContext(AuthContext);
+  const { isLogin, login } = useContext(AuthContext);
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
     console.log(userEmail, userPassword);
-    loginFunc()
+
+    const loginData = {
+      provider: "native",
+      email: userEmail,
+      password: userPassword,
+      access_token: "",
+    };
+
+    const data = login(loginData);
+    console.log(data);
+
+    console.log(`login status: ${isLogin}`);
   }
   const loginFunc = async (formState) => {
     const options = {
@@ -178,6 +191,7 @@ export default function LoginWindow() {
               type="password"
               name="password"
               placeholder="Your password..."
+              required
               onChange={(e) => {
                 setUserPassword(e.target.value);
               }}

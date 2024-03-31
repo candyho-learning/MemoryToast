@@ -2,10 +2,12 @@ import { useContext } from 'react';
 import ReactLoading from 'react-loading';
 import styled from 'styled-components';
 import { AuthContext } from '../../context/authContext';
-import './index.css';
-import ScratchCard from '../../components/ScratchCard';
-const Loading = styled(ReactLoading)`
-  margin-top: 50px;
+import LoginWindow from '../../components/LoginWindow';
+
+const Wrapper = styled.div`
+  padding: 60px 20px;
+  display: flex;
+  flex-direction: column;
 `;
 
 const ProfileWrapper = styled.div`
@@ -109,6 +111,10 @@ const IconWrapper = styled.div`
   cursor: pointer;
 `;
 
+const Loading = styled(ReactLoading)`
+  margin-top: 50px;
+`;
+
 function Profile() {
   const { user, isLogin, login, logout, loading } = useContext(AuthContext);
   const servicesArr = [
@@ -127,85 +133,75 @@ function Profile() {
   ];
   const renderContent = () => {
     if (loading) return <Loading type="spinningBubbles" color="#313538" />;
-    // if (isLogin) return (
-    //   <>
-    //     <Photo src={user.picture} />
-    //     <Content>{user.name}</Content>
-    //     <Content>{user.email}</Content>
-    //   </>
-    // );
-    // return (
-    //   <LogoutButton onClick={login}>登入</LogoutButton>
-    // );
+    if (isLogin)
+      return (
+        <div>
+          <ProfileWrapper>
+            <MemberWrapper>
+              <MemberPicWrapper>
+                <MemberPic>
+                  <Circle1 className="circle-1"></Circle1>
+                  <Circle2 className="circle-2"></Circle2>
+                  <MemberPicImg
+                    src="https://previews.123rf.com/images/virtosmedia/virtosmedia2302/virtosmedia230209170/197936185-portrait-of-a-beautiful-young-woman-lying-on-the-grass-with-flowers.jpg"
+                    alt=""
+                  />
+                </MemberPic>
+              </MemberPicWrapper>
+              <div className="memberInfoWrapper">
+                <p>Name: </p>
+                <p>Email: </p>
+                <p>Lucky color: </p>
+                <button class="blobby-button">
+                  Change lucky color{' '}
+                  <span class="inner">
+                    <span class="blobs">
+                      <span class="blob"></span>
+                      <span class="blob"></span>
+                      <span class="blob"></span>
+                      <span class="blob"></span>
+                    </span>
+                  </span>
+                  <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
+                    <defs>
+                      <filter id="goo">
+                        <feGaussianBlur
+                          in="SourceGraphic"
+                          result="blur"
+                          stdDeviation="10"
+                        ></feGaussianBlur>
+                        <feColorMatrix
+                          in="blur"
+                          mode="matrix"
+                          values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 21 -7"
+                          result="goo"
+                        ></feColorMatrix>
+                        <feBlend
+                          in2="goo"
+                          in="SourceGraphic"
+                          result="mix"
+                        ></feBlend>
+                      </filter>
+                    </defs>
+                  </svg>
+                </button>
+              </div>
+            </MemberWrapper>
+            <FuncWrapper>
+              {servicesArr.map((service) => (
+                <IconWrapper>
+                  <img src={`/icons/Icons_24px_${service.path}3x.png`} alt="" />
+                  <p>{service.service}</p>
+                </IconWrapper>
+              ))}
+            </FuncWrapper>
+          </ProfileWrapper>
+        </div>
+      );
+    // return <LogoutButton onClick={login}>登入</LogoutButton>;
+    return <LoginWindow />;
   };
-  return (
-    // <Wrapper>
-    //   {/* <Title>會員基本資訊</Title> */}
-    //   {renderContent()}
-    // </Wrapper>
-    <div>
-      <ProfileWrapper>
-        <MemberWrapper>
-          <MemberPicWrapper>
-            <MemberPic>
-              <Circle1 className="circle-1"></Circle1>
-              <Circle2 className="circle-2"></Circle2>
-              <MemberPicImg
-                src="https://previews.123rf.com/images/virtosmedia/virtosmedia2302/virtosmedia230209170/197936185-portrait-of-a-beautiful-young-woman-lying-on-the-grass-with-flowers.jpg"
-                alt=""
-              />
-            </MemberPic>
-          </MemberPicWrapper>
-          <div className="memberInfoWrapper">
-            <p>Name: </p>
-            <p>Email: </p>
-            <p>Lucky color: </p>
-            <button class="blobby-button">
-              Change lucky color{' '}
-              <span class="inner">
-                <span class="blobs">
-                  <span class="blob"></span>
-                  <span class="blob"></span>
-                  <span class="blob"></span>
-                  <span class="blob"></span>
-                </span>
-              </span>
-              <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
-                <defs>
-                  <filter id="goo">
-                    <feGaussianBlur
-                      in="SourceGraphic"
-                      result="blur"
-                      stdDeviation="10"
-                    ></feGaussianBlur>
-                    <feColorMatrix
-                      in="blur"
-                      mode="matrix"
-                      values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 21 -7"
-                      result="goo"
-                    ></feColorMatrix>
-                    <feBlend
-                      in2="goo"
-                      in="SourceGraphic"
-                      result="mix"
-                    ></feBlend>
-                  </filter>
-                </defs>
-              </svg>
-            </button>
-          </div>
-        </MemberWrapper>
-        <FuncWrapper>
-          {servicesArr.map((service) => (
-            <IconWrapper>
-              <img src={`/icons/Icons_24px_${service.path}3x.png`} alt="" />
-              <p>{service.service}</p>
-            </IconWrapper>
-          ))}
-        </FuncWrapper>
-      </ProfileWrapper>
-    </div>
-  );
+  return <>{renderContent()}</>;
 }
 
 export default Profile;

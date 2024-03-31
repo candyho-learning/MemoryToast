@@ -1,5 +1,6 @@
 const api = {
-  hostname: 'https://chouyu.site/api/1.0',
+  hostname: "https://chouyu.site/api/1.0",
+  // hostname: "https://api.appworks-school.tw/api/1.0",
   async getProducts(category, paging) {
     console.log(`${this.hostname}/products/${category}?paging=${paging}`)
     const response = await fetch(
@@ -25,31 +26,44 @@ const api = {
     const response = await fetch(`${this.hostname}/order/checkout`, {
       body: JSON.stringify(data),
       headers: new Headers({
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
         Authorization: `Bearer ${jwtToken}`,
       }),
-      method: 'POST',
+      method: "POST",
     });
     return await response.json();
   },
-  async signin(data) {
-    const response = await fetch(`${this.hostname}/user/signin`, {
-      body: JSON.stringify(data),
-      headers: new Headers({
-        'Content-Type': 'application/json',
-      }),
-      method: 'POST',
-    });
-    return await response.json();
+  async signin(loginData) {
+    try {
+      const response = await fetch(`${this.hostname}/user/signin`, {
+        body: JSON.stringify(loginData),
+        headers: new Headers({
+          "Content-Type": "application/json",
+        }),
+        method: "POST",
+      });
+      if (!response.ok) {
+        throw new Error("sign in failed");
+      }
+      const data = await response.json();
+      return data;
+    } catch (err) {
+      console.error(err);
+    }
   },
-  async getProfile(jwtToken) {
-    const response = await fetch(`${this.hostname}/user/profile`, {
-      headers: new Headers({
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${jwtToken}`,
-      }),
-    });
-    return await response.json();
+  async getProfile(token) {
+    try {
+      const response = await fetch(`${this.hostname}/user/profile`, {
+        headers: new Headers({
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        }),
+      });
+      if (!response.ok) throw new Error("token not valid");
+      return await response.json();
+    } catch (err) {
+      console.error(err);
+    }
   },
 };
 
