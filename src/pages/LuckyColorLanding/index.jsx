@@ -130,39 +130,52 @@ const Loading = styled(ReactLoading)`
 `;
 
 const Carousel = styled.div`
-  display: flex;
   width: 1000px;
   height: 400px;
   overflow: hidden;
   border: 1px solid red;
-  justify-content: center;
-  .card {
-    width: 400px;
+
+  .carousel-track {
+    display: flex;
+    justify-content: center;
     height: 100%;
-    background-color: pink;
-    border: 1px solid black;
-    flex-basis: 400px;
-    flex-shrink: 0;
-    margin: 0 50px;
 
-    img {
-      height: 70%;
-      width: 100%;
-      object-fit: cover;
-    }
-    .card-text-content {
-      padding: 20px 10px;
+    .card {
+      width: 400px;
+      height: 100%;
+      background-color: pink;
+      border: 1px solid black;
+      flex-basis: 400px;
+      flex-shrink: 0;
+      margin: 0 50px;
 
-      h3 {
-        margin: 15px 0;
-        font-weight: 600;
-        font-size: 24px;
+      &:first-child {
+        margin-left: 0; // Remove left margin for the first card
       }
 
-      button {
-        border: none;
-        padding: 5px 15px;
-        border-radius: 10px;
+      &:last-child {
+        margin-right: 0; // Remove right margin for the last card
+      }
+
+      img {
+        height: 70%;
+        width: 100%;
+        object-fit: cover;
+      }
+      .card-text-content {
+        padding: 20px 10px;
+
+        h3 {
+          margin: 15px 0;
+          font-weight: 600;
+          font-size: 24px;
+        }
+
+        button {
+          border: none;
+          padding: 5px 15px;
+          border-radius: 10px;
+        }
       }
     }
   }
@@ -188,6 +201,15 @@ export default function LuckyColorLanding() {
   const [mainImage, setMainImage] = useState(
     "https://images.unsplash.com/photo-1576740488939-3503ae080975?crop=entropy&cs=srgb&fm=jpg&ixid=M3wzMjM4NDZ8MHwxfHJhbmRvbXx8fHx8fHx8fDE3MTE4NzgxMTZ8&ixlib=rb-4.0.3&q=85"
   );
+
+  const [activeIndex, setActiveIndex] = useState(0);
+  const cardWidth = 400; // Match this with your actual card width + margin/gap
+  const handleScroll = (direction) => {
+    setActiveIndex((prevIndex) =>
+      direction === "left" ? prevIndex - 1 : prevIndex + 1
+    );
+  };
+  console.log(activeIndex);
 
   useEffect(() => {
     const getRecommendedProducts = async () => {
@@ -233,13 +255,22 @@ export default function LuckyColorLanding() {
       </div>
       <h1>更多推薦商品</h1>
       <Carousel>
-        <CarouselCard />
-        <CarouselCard />
-        <CarouselCard />
+        <div
+          className="carousel-track"
+          style={{
+            transform: `translateX(${(activeIndex + 2) * cardWidth + 50}px)`,
+          }}
+        >
+          <CarouselCard num={1} />
+          <CarouselCard num={2} active />
+          <CarouselCard num={3} />
+          <CarouselCard num={4} />
+          <CarouselCard num={5} />
+        </div>
       </Carousel>
       <ButtonsWrapper>
-        <button>⬅️</button>
-        <button>➡️</button>
+        <button onClick={() => handleScroll("left")}>⬅️</button>
+        <button onClick={() => handleScroll("right")}>➡️</button>
       </ButtonsWrapper>
 
       <h1>刮刮樂遊戲 🎲</h1>
