@@ -1,5 +1,7 @@
 import styled, { keyframes } from "styled-components";
-import { Button } from "../../components/LoginWindow";
+import LoginWindow, { Button } from "../../components/LoginWindow";
+import { useContext } from "react";
+import { AuthContext } from "../../context/authContext";
 
 const LandingPageWrapper = styled.div`
   display: flex;
@@ -135,6 +137,8 @@ const GameSection = styled.div`
 const marqueeSentence = "Infinite Marquee with long sentence";
 
 export default function LuckyColorLanding() {
+  const { isLogin } = useContext(AuthContext);
+  if (!isLogin) return <LoginWindow />;
   return (
     <LandingPageWrapper>
       <h1>本日運勢 🔮</h1>

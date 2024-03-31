@@ -98,7 +98,6 @@ export const AuthContextProvider = ({ children }) => {
 
   const logout = async () => {
     setLoading(true);
-    // await fb.logout();
     setIsLogin(false);
     setUser({});
     setAccessToken();
