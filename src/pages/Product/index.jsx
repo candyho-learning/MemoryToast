@@ -315,8 +315,74 @@ const TextWrapper = styled.div`
   margin-top: 20px;
   textarea {
     width: 100%;
+    height: 100%;
     font-size: 18px;
     padding: 5px;
+  }
+`;
+
+const FeedbackCommentWrapper = styled.div`
+letter-spacing: 1px;
+  width: 100%;
+  padding: 20px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  .title{
+  
+    font-size: 20px;
+  }
+  .reviewGroup {
+    .top {
+      display: flex;
+      gap: 20px;
+      margin: 15px 0;
+      .star {
+        margin-right: -8px;
+        font-size: 14px;
+        font-weight: bold;
+      }
+      .user {
+        margin-right: 20px;
+        font-weight: bold;
+        color: rgba(0, 0, 0, 0.8);
+      }
+    }
+    .bottom {
+      color: #4b5563;
+      padding: 16px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      min-height: 80px;
+      background-color: rgba(255, 166, 0, 0.2);
+    }
+  }
+  .starGroup {
+    margin-top: 2px;
+    display: flex;
+    gap: 10px;
+    height: 20px;
+    img {
+      height: 12px;
+      width: 12px;
+    }
+  }
+  .more{
+    width:100%;
+    height:50px;
+    border-radius: 5px;
+    background-color: #ddd;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap:15px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    img{
+      width: 20px;
+      height: 20px;
+      opacity: 0.7;
+    }
   }
 `;
 const Loading = styled(ReactLoading)`
@@ -340,6 +406,37 @@ function Product() {
   const [errMsg, setErrMsg] = useState('');
 
   const starTimer = useRef(null);
+  const [feedbackComment, setFeedbackComment] = useState([]);
+  const getComment = async () => {
+    try {
+      const response = await fetch(
+        `https://chouyu.site/api/1.0/comments?id=${id}`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+      return await response.json();
+      console.log(data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+  useEffect(() => {
+    const getcommentData = async () => {
+      const { data } = await getComment();
+      setFeedbackComment(data);
+    };
+    getcommentData();
+  }, []);
+  useEffect(() => {
+    async function getProduct() {
+      const { data } = await api.getProduct(id);
+      setProduct(data);
+    }
+    getProduct();
+  }, [id]);
   const checkStarTimer = () => {
     if (starTimer.current) {
       clearTimeout(starTimer.current);
@@ -364,29 +461,13 @@ function Product() {
       });
     }, 80);
   };
-  const test = async () => {
-    //"https://smillzy.net/api/1.0/report/orders?id=10273"
-    const options = {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' },
-    };
-    try {
-      const response = await fetch(
-        'https://smillzy.net/api/1.0/report/orders?id=10273',
-        options
-      );
-      console.log('response');
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
+  const starReset = () => {
+    setStar({
+      number: star.clickedNumber,
+      clicked: star.clicked,
+      clickedNumber: star.clickedNumber,
+    });
   };
-  useEffect(() => {
-    async function getProduct() {
-      const { data } = await api.getProduct(id);
-      setProduct(data);
-    }
-    getProduct();
-  }, [id]);
 
   const sendReview = () => {
     if (star.number === 0) {
@@ -402,26 +483,22 @@ function Product() {
     }
   };
 
-  const handleComment = (e) => {
+  const submitComment = (e) => {
     if (errMsg === '記得留言再送出評論哦') {
       setErrMsg('');
     }
     setComment(e.target.value);
   };
-
-  const starReset = () => {
-    setStar({
-      number: star.clickedNumber,
-      clicked: star.clicked,
-      clickedNumber: star.clickedNumber,
-    });
+  const showMoreComment = async () => {
+    const { data } = await getComment();
+    console.log(data);
+    if (data) setFeedbackComment([...feedbackComment, ...data]);
   };
   if (!product) return null;
 
-
   return (
     <>
-      {!checkLogin &&
+      {!checkLogin && (
         <Wrapper>
           <MainImage src={product.main_image} />
           <Details>
@@ -527,15 +604,48 @@ function Product() {
                 cols="30"
                 rows="10"
                 placeholder="請寫下大大寶貴的意見"
-                onChange={handleComment}
+                onChange={submitComment}
                 value={comment}
               ></textarea>
             </TextWrapper>
           </CommentWrapper>
+          <FeedbackCommentWrapper>
+            <p className='title'>最新評論</p>
+            {feedbackComment &&
+              feedbackComment.map((comment, index) => {
+                return (
+                  <div className="reviewGroup">
+                    <div className="top">
+                      <p className="user">{comment.name}</p>
+                      <p className="star">{comment.rate}.0</p>
+                      <div className="starGroup">
+                        {[...Array(5)].map((star, index) => (
+                          <img
+                            src={
+                              comment.rate >= index + 1
+                                ? '/icons/star.png'
+                                : '/icons/empty_star2.png'
+                            }
+                            alt=""
+                          />
+                        ))}
+                      </div>
+                    </div>
+                    <div className="bottom">
+                      <p>{comment.comment}</p>
+                    </div>
+                  </div>
+                );
+              })}
+            {/* <button onClick={showMoreComment}>查看更多</button> */}
+              <div className='more' onClick={showMoreComment}>
+                Show more
+                </div>
+          </FeedbackCommentWrapper>
         </Wrapper>
-      }
+      )}
 
-      { checkLogin && <LoginWindow setCheckLogin={setCheckLogin}/>}
+      {checkLogin && <LoginWindow setCheckLogin={setCheckLogin} />}
     </>
   );
 }
