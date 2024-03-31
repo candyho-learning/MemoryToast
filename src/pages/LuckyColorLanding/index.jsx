@@ -131,36 +131,40 @@ const Loading = styled(ReactLoading)`
 
 const Carousel = styled.div`
   width: 1000px;
-  height: 400px;
+  height: 430px;
   overflow: hidden;
-  border: 1px solid red;
+  background-color: #f1f1f1;
 
   .carousel-track {
     display: flex;
     justify-content: center;
     height: 100%;
+    padding: 30px 0;
 
     .card {
       width: 400px;
       height: 100%;
-      background-color: pink;
-      border: 1px solid black;
+      background-color: #f1f1f1;
       flex-basis: 400px;
       flex-shrink: 0;
       margin: 0 50px;
+      box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+      border-radius: 20px;
 
       &:first-child {
-        margin-left: 0; // Remove left margin for the first card
+        margin-left: 0;
       }
 
       &:last-child {
-        margin-right: 0; // Remove right margin for the last card
+        margin-right: 0;
       }
 
       img {
         height: 70%;
         width: 100%;
         object-fit: cover;
+        border-top-right-radius: 20px;
+        border-top-left-radius: 20px;
       }
       .card-text-content {
         padding: 20px 10px;
@@ -175,6 +179,8 @@ const Carousel = styled.div`
           border: none;
           padding: 5px 15px;
           border-radius: 10px;
+          background-color: black;
+          color: white;
         }
       }
     }
@@ -201,6 +207,7 @@ export default function LuckyColorLanding() {
   const [mainImage, setMainImage] = useState(
     "https://images.unsplash.com/photo-1576740488939-3503ae080975?crop=entropy&cs=srgb&fm=jpg&ixid=M3wzMjM4NDZ8MHwxfHJhbmRvbXx8fHx8fHx8fDE3MTE4NzgxMTZ8&ixlib=rb-4.0.3&q=85"
   );
+  const [moreProducts, setMoreProducts] = useState();
 
   const [activeIndex, setActiveIndex] = useState(0);
   const cardWidth = 400; // Match this with your actual card width + margin/gap
@@ -212,16 +219,22 @@ export default function LuckyColorLanding() {
   console.log(activeIndex);
 
   useEffect(() => {
+    console.log(user.color.slice(1));
     const getRecommendedProducts = async () => {
       const response = await fetch(
-        `https://traviss.beauty/api/1.0/recommendation?color=FFFFFF&gender=men`
+        `https://traviss.beauty/api/1.0/recommendation?color=${user.color.slice(
+          1
+        )}&gender=men`
       );
       if (!response.ok) {
         console.log("cannot fetch recommended product");
       }
       const { data } = await response.json();
+      console.log(data);
       const mainImage = data.main_image;
+      const moreProducts = data.images;
       mainImage && setMainImage(mainImage);
+      moreProducts && setMoreProducts(moreProducts);
     };
     getRecommendedProducts();
   }, [user]);
@@ -254,18 +267,20 @@ export default function LuckyColorLanding() {
         </div>
       </div>
       <h1>更多推薦商品</h1>
-      <Carousel>
+      <Carousel luckycolor={user.color}>
         <div
           className="carousel-track"
           style={{
             transform: `translateX(${(activeIndex + 2) * cardWidth + 50}px)`,
           }}
         >
-          <CarouselCard num={1} />
-          <CarouselCard num={2} active />
-          <CarouselCard num={3} />
-          <CarouselCard num={4} />
-          <CarouselCard num={5} />
+          {moreProducts &&
+            moreProducts.map((img) => <CarouselCard url={img} />)}
+          <CarouselCard />
+          <CarouselCard />
+          <CarouselCard />
+          <CarouselCard />
+          <CarouselCard />
         </div>
       </Carousel>
       <ButtonsWrapper>
