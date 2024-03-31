@@ -21,14 +21,11 @@ root.render(
         <Route index element={<Home />} />
         <Route path="products/:id" element={<Product />} />
         <Route path="checkout" element={<Checkout />} />
-        {/* <Route path="thankyou" element={<ThankYou />} /> */}
-        <Route path="thankyou" element={<LoginWindow />} />
-        {/* <Route path="thankyou" element={<SignUpWindow />} /> */}
+        <Route path="thankyou" element={<ThankYou />} />
+        <Route path="login" element={<LoginWindow />} />
+        <Route path="signup" element={<SignUpWindow />} />
 
-        <Route
-          path="profile"
-          element={<ProtectedComponent component={Profile} />}
-        />
+        <Route path="profile" element={<Profile />} />
         <Route path="myluckycolor" element={<LuckyColorLanding />} />
 
         <Route path="*" element={<Navigate to="/" replace />} />
