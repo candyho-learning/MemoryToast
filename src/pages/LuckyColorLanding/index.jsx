@@ -144,6 +144,7 @@ const marqueeSentence = "Infinite Marquee with long sentence";
 
 export default function LuckyColorLanding() {
   const { isLogin, user, loading } = useContext(AuthContext);
+  console.log(user,'color頁')
   if (loading)
     return (
       <LandingPageWrapper>
