@@ -506,6 +506,11 @@ console.log(typeof userId);
         }
       );
       console.log(response,'成功');
+      setStar({number: 0,
+        clicked: false,
+        clickedNumber: 0,
+      })
+      setComment('');
       //const data = await response.json();
       console.log(data,'成功');
       return data;
