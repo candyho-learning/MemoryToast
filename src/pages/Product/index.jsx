@@ -351,7 +351,7 @@ function Product() {
                 <div key={index}>
                   <img
                     className="star"
-                    src="/public/icons/star.png"
+                    src="/icons/star.png"
                     alt=""
                     style={{
                       clipPath: `polygon(0 0, ${starPercent}% 0, ${starPercent}% 100%, 0 100%)`,
@@ -359,7 +359,7 @@ function Product() {
                   />
                   <img
                     className="empty-star"
-                    src="/public/icons/empty_star2.png"
+                    src="/icons/empty_star2.png"
                     alt=""
                     style={{ marginLeft: `${index * 30}px` }}
                   />
