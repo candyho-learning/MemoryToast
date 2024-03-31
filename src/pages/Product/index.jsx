@@ -23,7 +23,7 @@ const Wrapper = styled.div`
 
 const MainImage = styled.img`
   width: 460px;
-  height: 768px;
+
   @media screen and (max-width: 1279px) {
     width: 100%;
   }
