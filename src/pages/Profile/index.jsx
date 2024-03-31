@@ -1,8 +1,9 @@
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import ReactLoading from 'react-loading';
 import styled from 'styled-components';
 import { AuthContext } from '../../context/authContext';
 import LoginWindow from '../../components/LoginWindow';
+import './index.css';
 
 const Wrapper = styled.div`
   padding: 60px 20px;
@@ -26,7 +27,6 @@ const MemberWrapper = styled.div`
   border-radius: 10px;
   padding-top: 50px;
   flex-grow: 0.3;
-  background-color: #8caed7;
   align-items: center;
   display: flex;
   flex-direction: column;
@@ -117,6 +117,7 @@ const Loading = styled(ReactLoading)`
 
 function Profile() {
   const { user, isLogin, login, logout, loading } = useContext(AuthContext);
+  const [bgColor, setBgColor] = useState();
   const servicesArr = [
     { service: '地址', path: 'Address' },
     { service: '待付款', path: 'AwaitingPayment' },
@@ -131,13 +132,17 @@ function Profile() {
     { service: '設定', path: 'Settings' },
     { service: '收藏', path: 'Starred' },
   ];
+  useEffect(() => {
+    const userData = JSON.parse(localStorage.getItem('userProfile'));
+    setBgColor(userData.color);
+  }, []);
   const renderContent = () => {
     if (loading) return <Loading type="spinningBubbles" color="#313538" />;
     if (isLogin)
       return (
         <div>
           <ProfileWrapper>
-            <MemberWrapper>
+            <MemberWrapper style={{ backgroundColor: `${bgColor}` }}>
               <MemberPicWrapper>
                 <MemberPic>
                   <Circle1 className="circle-1"></Circle1>

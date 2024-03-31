@@ -1,8 +1,12 @@
 import { useEffect, useState, useRef } from 'react';
 import { useParams } from 'react-router-dom';
+import { useContext } from 'react';
+import { AuthContext } from '../../context/authContext';
 import styled from 'styled-components';
 import api from '../../utils/api';
 import ProductVariants from './ProductVariants';
+import LoginWindow from '../../components/LoginWindow';
+import ReactLoading from 'react-loading';
 
 const Wrapper = styled.div`
   max-width: 960px;
@@ -244,8 +248,8 @@ const AvgStarGroup = styled.div`
 
 const CommentWrapper = styled.div`
   width: 100%;
-  p{
-    margin-top:-4px;
+  p {
+    margin-top: -4px;
   }
   .title {
     height: 50px;
@@ -315,7 +319,12 @@ const TextWrapper = styled.div`
     padding: 5px;
   }
 `;
+const Loading = styled(ReactLoading)`
+  margin-top: 50px;
+`;
 function Product() {
+  const { user, isLogin, login, logout, loading } = useContext(AuthContext);
+  const [checkLogin, setCheckLogin] = useState(false);
   const [product, setProduct] = useState();
   const { id } = useParams();
   const [feedbackReview, setFeedbackReview] = useState({
@@ -349,13 +358,13 @@ function Product() {
     checkStarTimer();
     starTimer.current = setTimeout(() => {
       setStar({
-        number: clickedNumber,
+        number: star.clickedNumber,
         clicked: star.clicked,
         clickedNumber: star.clickedNumber,
       });
     }, 80);
   };
-  const test = async() => {
+  const test = async () => {
     //"https://smillzy.net/api/1.0/report/orders?id=10273"
     const options = {
       method: 'GET',
@@ -363,14 +372,14 @@ function Product() {
     };
     try {
       const response = await fetch(
-        "https://smillzy.net/api/1.0/report/orders?id=10273",
+        'https://smillzy.net/api/1.0/report/orders?id=10273',
         options
       );
       console.log('response');
     } catch (error) {
       console.error('Error fetching data:', error);
     }
-  }
+  };
   useEffect(() => {
     async function getProduct() {
       const { data } = await api.getProduct(id);
@@ -387,6 +396,9 @@ function Product() {
     if (!comment) {
       setErrMsg('記得留言再送出評論哦!');
       return;
+    }
+    if (!isLogin) {
+      setCheckLogin(true);
     }
   };
 
@@ -406,116 +418,125 @@ function Product() {
   };
   if (!product) return null;
 
+
   return (
-    <Wrapper>
-      <MainImage src={product.main_image} />
-      <Details>
-        <Title>{product.title}</Title>
-        <ID>{product.id}</ID>
-        <ReviewWrapper>
-          <p className="score">{feedbackReview.avgStar}</p>
-          <AvgStarGroup>
-            {[...Array(5)].map((_, index) => {
-              const { avgStar } = feedbackReview;
-              const starPercent =
-                avgStar > index && avgStar < index + 1
-                  ? (avgStar - index) * 100
-                  : avgStar < index
-                  ? 0
-                  : 100;
-              return (
-                <div key={index}>
-                  <img
-                    className="star"
-                    src="/icons/star.png"
-                    alt=""
-                    style={{
-                      clipPath: `polygon(0 0, ${starPercent}% 0, ${starPercent}% 100%, 0 100%)`,
-                    }}
-                  />
-                  <img
-                    className="empty-star"
-                    src="/icons/empty_star2.png"
-                    alt=""
-                    style={{ marginLeft: `${index * 30}px` }}
-                  />
-                </div>
-              );
-            })}
-            <p className="reviews">Reviews({feedbackReview.totalComments})</p>
-          </AvgStarGroup>
-        </ReviewWrapper>
+    <>
+      {!checkLogin &&
+        <Wrapper>
+          <MainImage src={product.main_image} />
+          <Details>
+            <Title>{product.title}</Title>
+            <ID>{product.id}</ID>
+            <ReviewWrapper>
+              <p className="score">{feedbackReview.avgStar}</p>
+              <AvgStarGroup>
+                {[...Array(5)].map((_, index) => {
+                  const { avgStar } = feedbackReview;
+                  const starPercent =
+                    avgStar > index && avgStar < index + 1
+                      ? (avgStar - index) * 100
+                      : avgStar < index
+                      ? 0
+                      : 100;
+                  return (
+                    <div key={index}>
+                      <img
+                        className="star"
+                        src="/icons/star.png"
+                        alt=""
+                        style={{
+                          clipPath: `polygon(0 0, ${starPercent}% 0, ${starPercent}% 100%, 0 100%)`,
+                        }}
+                      />
+                      <img
+                        className="empty-star"
+                        src="/icons/empty_star2.png"
+                        alt=""
+                        style={{ marginLeft: `${index * 30}px` }}
+                      />
+                    </div>
+                  );
+                })}
+                <p className="reviews">
+                  Reviews({feedbackReview.totalComments})
+                </p>
+              </AvgStarGroup>
+            </ReviewWrapper>
 
-        <Price>TWD.{product.price}</Price>
-        <ProductVariants product={product} />
-        <Note>{product.note}</Note>
-        <Texture>{product.texture}</Texture>
-        <Description>{product.description}</Description>
-        <Place>素材產地 / {product.place}</Place>
-        <Place>加工產地 / {product.place}</Place>
-      </Details>
-      <Story>
-        <StoryTitle>細部說明</StoryTitle>
-        <StoryContent>{product.story}</StoryContent>
-      </Story>
-      <Images>
-        {product.images.map((image, index) => (
-          <Image src={image} key={index} />
-        ))}
-      </Images>
-      <hr />
-      <CommentWrapper>
-        <div className="title">
-          <div className="titleLeft">
-            <p>評論</p>
-            <AvgStarGroup onMouseLeave={starReset}>
-              {[...Array(5)].map((_, index) => {
-                return (
-                  <div>
-                    <div
-                      key={index}
-                      className="commentStar"
-                      style={{ opacity: index < star.number ? '1' : 0 }}
-                      onMouseEnter={() => {
-                        hoverStar(index);
-                      }}
-                      onMouseLeave={leaveStar}
-                      onClick={() => {
-                        setStar({
-                          number: index + 1,
-                          clicked: true,
-                          clickedNumber: index + 1,
-                        });
-                        if (errMsg === '記得先給評分哦!') {
-                          setErrMsg('');
-                        }
-                      }}
-                    ></div>
-                    <div key={index + 6} className="commentEmptyStar"></div>
-                  </div>
-                );
-              })}
-            </AvgStarGroup>
-            <p className="errMsg">{errMsg}</p>
-          </div>
+            <Price>TWD.{product.price}</Price>
+            <ProductVariants product={product} />
+            <Note>{product.note}</Note>
+            <Texture>{product.texture}</Texture>
+            <Description>{product.description}</Description>
+            <Place>素材產地 / {product.place}</Place>
+            <Place>加工產地 / {product.place}</Place>
+          </Details>
+          <Story>
+            <StoryTitle>細部說明</StoryTitle>
+            <StoryContent>{product.story}</StoryContent>
+          </Story>
+          <Images>
+            {product.images.map((image, index) => (
+              <Image src={image} key={index} />
+            ))}
+          </Images>
+          <hr />
+          <CommentWrapper>
+            <div className="title">
+              <div className="titleLeft">
+                <p>評論</p>
+                <AvgStarGroup onMouseLeave={starReset}>
+                  {[...Array(5)].map((_, index) => {
+                    return (
+                      <div>
+                        <div
+                          key={index}
+                          className="commentStar"
+                          style={{ opacity: index < star.number ? '1' : 0 }}
+                          onMouseEnter={() => {
+                            hoverStar(index);
+                          }}
+                          onMouseLeave={leaveStar}
+                          onClick={() => {
+                            setStar({
+                              number: index + 1,
+                              clicked: true,
+                              clickedNumber: index + 1,
+                            });
+                            if (errMsg === '記得先給評分哦!') {
+                              setErrMsg('');
+                            }
+                          }}
+                        ></div>
+                        <div key={index + 6} className="commentEmptyStar"></div>
+                      </div>
+                    );
+                  })}
+                </AvgStarGroup>
+                <p className="errMsg">{errMsg}</p>
+              </div>
 
-          <button className="commentButton" onClick={sendReview}>
-            發表評論
-          </button>
-        </div>
-        <TextWrapper>
-          <textarea
-            name=""
-            id=""
-            cols="30"
-            rows="10"
-            placeholder="請寫下大大寶貴的意見"
-            onChange={handleComment}
-            value={comment}
-          ></textarea>
-        </TextWrapper>
-      </CommentWrapper>
-    </Wrapper>
+              <button className="commentButton" onClick={sendReview}>
+                發表評論
+              </button>
+            </div>
+            <TextWrapper>
+              <textarea
+                name=""
+                id=""
+                cols="30"
+                rows="10"
+                placeholder="請寫下大大寶貴的意見"
+                onChange={handleComment}
+                value={comment}
+              ></textarea>
+            </TextWrapper>
+          </CommentWrapper>
+        </Wrapper>
+      }
+
+      { checkLogin && <LoginWindow setCheckLogin={setCheckLogin}/>}
+    </>
   );
 }
 

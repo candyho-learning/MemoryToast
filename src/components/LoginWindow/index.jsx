@@ -120,7 +120,7 @@ export const Button = styled.button`
   }
 `;
 
-export default function LoginWindow() {
+export default function LoginWindow({setCheckLogin}) {
   const [userEmail, setUserEmail] = useState("");
   const [userPassword, setUserPassword] = useState("");
   const { isLogin, login } = useContext(AuthContext);
@@ -138,7 +138,10 @@ export default function LoginWindow() {
 
     const data = login(loginData);
     console.log(data);
-
+    if(setCheckLogin!==undefined){
+      console.log('YO')
+      setCheckLogin(false)
+    }
     console.log(`login status: ${isLogin}`);
   }
   const loginFunc = async (formState) => {
@@ -158,6 +161,7 @@ export default function LoginWindow() {
         options
       );
       const data = await response.json();
+     
       console.log(data);
     } catch (error) {
       console.error('Error fetching data:', error);
