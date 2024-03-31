@@ -139,21 +139,6 @@ export default function LoginWindow() {
     console.log(data);
     localStorage.setItem("accessToken", JSON.stringify(data.access_token));
     localStorage.setItem("userProfile", JSON.stringify(data.user));
-
-    // try {
-    //   const response = await fetch("http://50.16.87.98/api/1.0/user/signin", {
-    //     method: "POST",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //     body: JSON.stringify(loginData),
-    //   });
-
-    //   const data = await response.json();
-    //   console.log(data);
-    // } catch (err) {
-    //   console.error(err);
-    // }
   }
   return (
     <BackgroundMask>

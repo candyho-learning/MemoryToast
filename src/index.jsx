@@ -10,6 +10,8 @@ import LoginWindow from "./components/LoginWindow";
 import SignUpWindow from "./components/SignUpWindow";
 import LuckyColorLanding from "./pages/LuckyColorLanding";
 
+import ProtectedComponent from "./components/ProtectedComponent/ProtectedComponent";
+
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
@@ -23,7 +25,10 @@ root.render(
         <Route path="thankyou" element={<LoginWindow />} />
         {/* <Route path="thankyou" element={<SignUpWindow />} /> */}
 
-        <Route path="profile" element={<Profile />} />
+        <Route
+          path="profile"
+          element={<ProtectedComponent component={Profile} />}
+        />
         <Route path="myluckycolor" element={<LuckyColorLanding />} />
 
         <Route path="*" element={<Navigate to="/" replace />} />
