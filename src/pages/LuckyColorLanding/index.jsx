@@ -1,9 +1,10 @@
 import styled, { keyframes } from "styled-components";
 import LoginWindow, { Button } from "../../components/LoginWindow";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context/authContext";
 import ReactLoading from "react-loading";
 import ScratchCard from "../../components/ScratchCard";
+import CarouselCard from "./CarouselCard";
 
 const LandingPageWrapper = styled.div`
   display: flex;
@@ -76,22 +77,9 @@ const Track = styled.div`
 `;
 
 const GalleryContainer = styled.div`
-  display: grid;
-  grid-column-template: 200px 200px;
-  grid-row-template: 200px 200px;
   background-color: grey;
-
-  .product.main {
-    grid-row: 1/3;
-    grid-column: 2/3;
-    background-color: pink;
-  }
-
-  .product {
-    background-color: skyblue;
-    border: 2px solid white;
-    overflow: hidden;
-  }
+  width: 550px;
+  height: 680px;
 
   img {
     height: 100%;
@@ -141,10 +129,80 @@ const Loading = styled(ReactLoading)`
   margin-left: 50px;
 `;
 
+const Carousel = styled.div`
+  display: flex;
+  width: 1000px;
+  height: 400px;
+  overflow: hidden;
+  border: 1px solid red;
+  justify-content: center;
+  .card {
+    width: 400px;
+    height: 100%;
+    background-color: pink;
+    border: 1px solid black;
+    flex-basis: 400px;
+    flex-shrink: 0;
+    margin: 0 50px;
+
+    img {
+      height: 70%;
+      width: 100%;
+      object-fit: cover;
+    }
+    .card-text-content {
+      padding: 20px 10px;
+
+      h3 {
+        margin: 15px 0;
+        font-weight: 600;
+        font-size: 24px;
+      }
+
+      button {
+        border: none;
+        padding: 5px 15px;
+        border-radius: 10px;
+      }
+    }
+  }
+`;
+
+const ButtonsWrapper = styled.div`
+  display: flex;
+  margin-top: 25px;
+
+  button {
+    height: 50px;
+    width: 50px;
+    font-size: 40px;
+    border: none;
+    background-color: transparent;
+    margin: 0 20px;
+  }
+`;
 const marqueeSentence = "Infinite Marquee with long sentence";
 
 export default function LuckyColorLanding() {
   const { isLogin, user, loading } = useContext(AuthContext);
+  const [mainImage, setMainImage] = useState(
+    "https://images.unsplash.com/photo-1576740488939-3503ae080975?crop=entropy&cs=srgb&fm=jpg&ixid=M3wzMjM4NDZ8MHwxfHJhbmRvbXx8fHx8fHx8fDE3MTE4NzgxMTZ8&ixlib=rb-4.0.3&q=85"
+  );
+
+  useEffect(() => {
+    const getRecommendedProducts = async () => {
+      const response = await fetch(
+        `https://traviss.beauty/api/1.0/recommendation?color=FFFFFF&gender=men`
+      );
+      if (!response.ok) {
+        console.log("cannot fetch recommended product");
+      }
+      const { data } = await response.json();
+      const mainImage = data.main_image;
+      mainImage && setMainImage(mainImage);
+    };
+    getRecommendedProducts();
+  }, [user]);
   if (loading)
     return (
       <LandingPageWrapper>
@@ -165,15 +223,7 @@ export default function LuckyColorLanding() {
       <div className="recommended-products-section">
         <div className="products">
           <GalleryContainer>
-            <div className="product main">
-              <img src="https://images.unsplash.com/photo-1495121605193-b116b5b9c5fe?crop=entropy&cs=srgb&fm=jpg&ixid=M3wzMjM4NDZ8MHwxfHJhbmRvbXx8fHx8fHx8fDE3MTE3NzM5MDN8&ixlib=rb-4.0.3&q=85" />
-            </div>
-            <div className="product">
-              <img src="https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?crop=entropy&cs=srgb&fm=jpg&ixid=M3wzMjM4NDZ8MHwxfHJhbmRvbXx8fHx8fHx8fDE3MTE3NzM5MDN8&ixlib=rb-4.0.3&q=85" />
-            </div>
-            <div className="product">
-              <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?crop=entropy&cs=srgb&fm=jpg&ixid=M3wzMjM4NDZ8MHwxfHJhbmRvbXx8fHx8fHx8fDE3MTE3NzQ1OTJ8&ixlib=rb-4.0.3&q=85" />
-            </div>
+            <img src={mainImage} />
           </GalleryContainer>
         </div>
         <div className="texts">
@@ -181,6 +231,16 @@ export default function LuckyColorLanding() {
           <h1>These would look great on you, don't you think so?</h1>
         </div>
       </div>
+      <h1>更多推薦商品</h1>
+      <Carousel>
+        <CarouselCard />
+        <CarouselCard />
+        <CarouselCard />
+      </Carousel>
+      <ButtonsWrapper>
+        <button>⬅️</button>
+        <button>➡️</button>
+      </ButtonsWrapper>
 
       <h1>刮刮樂遊戲 🎲</h1>
       <GameSection>
