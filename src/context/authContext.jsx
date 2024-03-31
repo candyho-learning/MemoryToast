@@ -40,6 +40,7 @@ export const AuthContextProvider = ({ children }) => {
     console.log(accessToken);
     if (!accessToken) {
       console.log("no token, aborting");
+      setLoading(false);
       return;
     }
     const checkAuthStatus = async () => {
@@ -59,14 +60,6 @@ export const AuthContextProvider = ({ children }) => {
       }
     };
     checkAuthStatus();
-
-    // if (response.status === "connected") {
-    //   handleLoginResponse(response);
-    //   setLoading(false);
-    // } else {
-    //   window.localStorage.removeItem("accessToken");
-    //   setLoading(false);
-    // }
   }, []);
 
   // const login = async () => {
@@ -84,16 +77,20 @@ export const AuthContextProvider = ({ children }) => {
   //   }
   // };
 
-  const login = async () => {
+  const login = async (loginData) => {
     setLoading(true);
     // TODO: Send data to Login API
-    const response = await fb.login();
-    if (response.status === "connected") {
-      const tokenFromServer = handleLoginResponse(response);
+    const { data } = await api.signin(loginData);
+    if (data) {
       setLoading(false);
-      return tokenFromServer;
+      setIsLogin(true);
+      localStorage.setItem("accessToken", JSON.stringify(data.access_token));
+      localStorage.setItem("userProfile", JSON.stringify(data.user));
+      return data;
     } else {
+      console.log("log in failed");
       window.localStorage.removeItem("accessToken");
+      window.localStorage.removeItem("userProfile");
       setLoading(false);
       return null;
     }
@@ -101,7 +98,6 @@ export const AuthContextProvider = ({ children }) => {
 
   const logout = async () => {
     setLoading(true);
-    // await fb.logout();
     setIsLogin(false);
     setUser({});
     setAccessToken();

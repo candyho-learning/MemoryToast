@@ -3,6 +3,7 @@ import { AuthContext } from "../../context/authContext";
 import { useState, useContext } from "react";
 import logo from "../Header/logo.png";
 import api from "../../utils/api";
+import { useNavigate, useLocation } from "react-router-dom";
 
 export const BackgroundMask = styled.div`
   background: radial-gradient(circle, #837568 50%, #313538);
@@ -122,7 +123,7 @@ export const Button = styled.button`
 export default function LoginWindow() {
   const [userEmail, setUserEmail] = useState("");
   const [userPassword, setUserPassword] = useState("");
-  const { login } = useContext(AuthContext);
+  const { isLogin, login } = useContext(AuthContext);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -135,10 +136,10 @@ export default function LoginWindow() {
       access_token: "",
     };
 
-    const { data } = await api.signin(loginData);
+    const data = login(loginData);
     console.log(data);
-    localStorage.setItem("accessToken", JSON.stringify(data.access_token));
-    localStorage.setItem("userProfile", JSON.stringify(data.user));
+
+    console.log(`login status: ${isLogin}`);
   }
   return (
     <BackgroundMask>
