@@ -1,19 +1,32 @@
-import React, { useState, Fragment, useEffect } from 'react';
-import Wheel from '@uiw/react-color-wheel';
-import { hsvaToHex } from '@uiw/color-convert';
+import React, { useState, Fragment, useEffect, useRef } from "react";
+import Wheel from "@uiw/react-color-wheel";
+import { hsvaToHex } from "@uiw/color-convert";
 
-function ColorPicker() {
+function ColorPicker({ setColorName, colorName, setColorCode }) {
   const [hsva, setHsva] = useState({ h: 214, s: 43, v: 90, a: 1 });
-  const [colorName, setColorName] = useState(''); //儲存顏色的名字
+  // const [colorName, setColorName] = useState("");
+  const isLoading = useRef(false);
 
   useEffect(() => {
-    const setColor = async () => {
-      const colorName = await getColorNameFromHSV();
-      setColorName(colorName); //在這裡設置顏色名稱的狀態
+    let timerId;
+    if (isLoading.current) return;
+
+    timerId = setTimeout(async () => {
+      isLoading.current = true;
+      const colorData = await getColorDataFromHSV();
+      isLoading.current = false;
+      const colorName = colorData.name.value; //color name
+      const colorRGB = colorData.rgb.value; //rgb color code
+      setColorCode(colorRGB);
+      setColorName(colorName);
+    }, 50);
+
+    return () => {
+      clearTimeout(timerId);
     };
-    setColor();
   }, [hsva]);
-  async function getColorNameFromHSV() {
+
+  async function getColorDataFromHSV() {
     const hsvQueryString = `hsv=${hsva.h},${hsva.s},${hsva.v}`;
     const apiUrl = `https://www.thecolorapi.com/id?${hsvQueryString}`;
 
@@ -26,9 +39,9 @@ function ColorPicker() {
       }
 
       const data = await response.json();
-      return data.name.value;
+      return data;
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error("Error fetching data:", error);
       return null;
     }
   }
@@ -41,7 +54,7 @@ function ColorPicker() {
       />
       <div
         style={{
-          width: '100%',
+          width: "100%",
           height: 34,
           marginTop: 20,
           background: hsvaToHex(hsva),
