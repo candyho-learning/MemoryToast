@@ -22,8 +22,8 @@ const Wrapper = styled.div`
 `;
 
 const MainImage = styled.img`
-  width: 560px;
-
+  width: 460px;
+  height: 768px;
   @media screen and (max-width: 1279px) {
     width: 100%;
   }
@@ -43,7 +43,8 @@ const Title = styled.div`
   font-size: 32px;
   letter-spacing: 6.4px;
   color: #3f3a3a;
-
+  width: 400px;
+  white-space: wrap;
   @media screen and (max-width: 1279px) {
     line-height: 24px;
     font-size: 20px;
@@ -295,6 +296,22 @@ const CommentWrapper = styled.div`
     letter-spacing: 4px;
     border: none;
   }
+  .errMsg {
+    font-size: 15px;
+    color: #ea0000;
+    letter-spacing: 2px;
+  }
+`;
+
+const TextWrapper = styled.div`
+  width: 100%;
+  height: 200px;
+  margin-top: 20px;
+  textarea {
+    width: 100%;
+    font-size: 18px;
+    padding: 5px;
+  }
 `;
 function Product() {
   const [product, setProduct] = useState();
@@ -303,7 +320,14 @@ function Product() {
     avgStar: 2.4,
     totalComments: 50,
   });
-  const [star, setStar] = useState(0);
+  const [star, setStar] = useState({
+    number: 0,
+    clicked: false,
+    clickedNumber: 0,
+  });
+  const [comment, setComment] = useState('');
+  const [errMsg, setErrMsg] = useState('');
+
   const starTimer = useRef(null);
   const checkStarTimer = () => {
     if (starTimer.current) {
@@ -312,12 +336,21 @@ function Product() {
   };
   const hoverStar = (index) => {
     checkStarTimer();
-    setStar(index + 1);
+    setStar({
+      number: index + 1,
+      clicked: star.clicked,
+      clickedNumber: star.clickedNumber,
+    });
   };
   const leaveStar = () => {
+    if (star.clicked) return;
     checkStarTimer();
     starTimer.current = setTimeout(() => {
-      setStar(0);
+      setStar({
+        number: clickedNumber,
+        clicked: star.clicked,
+        clickedNumber: star.clickedNumber,
+      });
     }, 80);
   };
   useEffect(() => {
@@ -328,6 +361,31 @@ function Product() {
     getProduct();
   }, [id]);
 
+  const sendReview = () => {
+    if (star.number === 0) {
+      setErrMsg('記得先給評分哦!');
+      return;
+    }
+    if (!comment) {
+      setErrMsg('記得留言再送出評論哦!');
+      return;
+    }
+  };
+
+  const handleComment = (e) => {
+    if (errMsg === '記得留言再送出評論哦') {
+      setErrMsg('');
+    }
+    setComment(e.target.value);
+  };
+
+  const starReset = () => {
+    setStar({
+      number: star.clickedNumber,
+      clicked: star.clicked,
+      clickedNumber: star.clickedNumber,
+    });
+  };
   if (!product) return null;
 
   return (
@@ -392,20 +450,27 @@ function Product() {
         <div className="title">
           <div className="titleLeft">
             <p>評論</p>
-            <AvgStarGroup>
+            <AvgStarGroup onMouseLeave={starReset}>
               {[...Array(5)].map((_, index) => {
                 return (
                   <div>
                     <div
                       key={index}
                       className="commentStar"
-                      style={{ opacity: index < star ? '1' : 0 }}
+                      style={{ opacity: index < star.number ? '1' : 0 }}
                       onMouseEnter={() => {
                         hoverStar(index);
                       }}
                       onMouseLeave={leaveStar}
                       onClick={() => {
-                        setStar(index + 1);
+                        setStar({
+                          number: index + 1,
+                          clicked: true,
+                          clickedNumber: index + 1,
+                        });
+                        if (errMsg === '記得先給評分哦!') {
+                          setErrMsg('');
+                        }
                       }}
                     ></div>
                     <div key={index + 6} className="commentEmptyStar"></div>
@@ -413,10 +478,24 @@ function Product() {
                 );
               })}
             </AvgStarGroup>
+            <p className="errMsg">{errMsg}</p>
           </div>
 
-          <button className="commentButton">評論商品</button>
+          <button className="commentButton" onClick={sendReview}>
+            發表評論
+          </button>
         </div>
+        <TextWrapper>
+          <textarea
+            name=""
+            id=""
+            cols="30"
+            rows="10"
+            placeholder="請寫下大大寶貴的意見"
+            onChange={handleComment}
+            value={comment}
+          ></textarea>
+        </TextWrapper>
       </CommentWrapper>
     </Wrapper>
   );
