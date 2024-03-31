@@ -67,8 +67,34 @@ export default function SignUpWindow() {
   }
   function handleSubmit(e) {
     e.preventDefault();
-    console.log(formState);
+   // console.log(formState);
+    signUp(formState)
   }
+
+  const signUp = async (formState) => {
+    const options = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        provider:'native',
+        birthday:formState.birthday,
+        color:luckyColorCode,
+        email:formState.email,
+        password:formState.password,
+        name:formState.name,
+      }),
+    };
+    try {
+      const response = await fetch(
+        "http://50.16.87.98/api/1.0/user/signup",
+        options
+      );
+      const data = await response.json();
+      console.log(data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
 
   useEffect(() => {
     setFormState({
