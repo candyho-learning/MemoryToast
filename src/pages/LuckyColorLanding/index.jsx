@@ -2,6 +2,7 @@ import styled, { keyframes } from "styled-components";
 import LoginWindow, { Button } from "../../components/LoginWindow";
 import { useContext } from "react";
 import { AuthContext } from "../../context/authContext";
+import ReactLoading from "react-loading";
 
 const LandingPageWrapper = styled.div`
   display: flex;
@@ -62,7 +63,7 @@ const Track = styled.div`
   position: absolute;
   white-space: nowrap;
   will-change: transform;
-  background-color: #8b572a;
+  background-color: ${(props) => props.luckyColor || "#8b572a"};
   height: 70px;
   line-height: 2;
   color: white;
@@ -134,16 +135,28 @@ const GameSection = styled.div`
   }
 `;
 
+const Loading = styled(ReactLoading)`
+  margin-top: 50px;
+  margin-left: 50px;
+`;
+
 const marqueeSentence = "Infinite Marquee with long sentence";
 
 export default function LuckyColorLanding() {
-  const { isLogin } = useContext(AuthContext);
+  const { isLogin, user, loading } = useContext(AuthContext);
+  if (loading)
+    return (
+      <LandingPageWrapper>
+        <h1>Loading your personal colorful experience...</h1>
+        <Loading type="spinningBubbles" color="#313538" />
+      </LandingPageWrapper>
+    );
   if (!isLogin) return <LoginWindow />;
   return (
     <LandingPageWrapper>
       <h1>本日運勢 🔮</h1>
       <Marquee>
-        <Track>
+        <Track luckyColor={user.color}>
           <div className="content">{marqueeSentence.repeat(10)}</div>
         </Track>
       </Marquee>
