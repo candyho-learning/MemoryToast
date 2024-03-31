@@ -68,6 +68,14 @@ export default function SignUpWindow() {
   function handleSubmit(e) {
     e.preventDefault();
     console.log(formState);
+
+    const signUpData = {
+      name: formState.name,
+      email: formState.email,
+      password: formState.password,
+      color: formState.colorCode,
+      birthday: formState.birthday,
+    };
   }
 
   useEffect(() => {

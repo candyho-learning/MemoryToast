@@ -3,6 +3,7 @@ import LoginWindow, { Button } from "../../components/LoginWindow";
 import { useContext } from "react";
 import { AuthContext } from "../../context/authContext";
 import ReactLoading from "react-loading";
+import ScratchCard from "../../components/ScratchCard";
 
 const LandingPageWrapper = styled.div`
   display: flex;
@@ -63,7 +64,7 @@ const Track = styled.div`
   position: absolute;
   white-space: nowrap;
   will-change: transform;
-  background-color: ${(props) => props.luckyColor || "#8b572a"};
+  background-color: ${(props) => props.luckycolor || "#8b572a"};
   height: 70px;
   line-height: 2;
   color: white;
@@ -156,7 +157,7 @@ export default function LuckyColorLanding() {
     <LandingPageWrapper>
       <h1>本日運勢 🔮</h1>
       <Marquee>
-        <Track luckyColor={user.color}>
+        <Track luckycolor={user.color}>
           <div className="content">{marqueeSentence.repeat(10)}</div>
         </Track>
       </Marquee>
@@ -183,6 +184,7 @@ export default function LuckyColorLanding() {
 
       <h1>刮刮樂遊戲 🎲</h1>
       <GameSection>
+        <ScratchCard />
         <button>Start Game</button>
       </GameSection>
     </LandingPageWrapper>
