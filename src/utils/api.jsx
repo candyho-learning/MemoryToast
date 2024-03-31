@@ -1,7 +1,7 @@
 const api = {
-  hostname: 'http://50.16.87.98/api/1.0',
+  hostname: 'https://chouyu.site/api/1.0',
   async getProducts(category, paging) {
-    console.log('123')
+    console.log(`${this.hostname}/products/${category}?paging=${paging}`)
     const response = await fetch(
       `${this.hostname}/products/${category}?paging=${paging}`
     );
