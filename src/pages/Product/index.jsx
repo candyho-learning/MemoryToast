@@ -243,30 +243,8 @@ const AvgStarGroup = styled.div`
 
 const CommentWrapper = styled.div`
   width: 100%;
-
-  .commentStar {
-    background-image: url('/icons/star.png');
-    height: 20px;
-    width: 20px;
-    background-size: cover;
-    opacity: 0;
-    cursor: pointer;
-    caret-color: transparent;
-  }
-  .commentEmptyStar {
-    z-index: -1;
-    position: absolute;
-    top: 0;
-    height: 20px;
-    width: 20px;
-    background-image: url('/icons/empty_star2.png');
-    background-size: cover;
-    cursor: pointer;
-    caret-color: transparent;
-  }
-  .commentStar:hover {
-    transform: scale(1.1);
-    transition: transform 0.3s;
+  p{
+    margin-top:-4px;
   }
   .title {
     height: 50px;
@@ -279,13 +257,37 @@ const CommentWrapper = styled.div`
     align-items: center;
     justify-content: space-between;
   }
-  p {
-    margin-top: -2px;
+
+  .commentStar,
+  .commentEmptyStar {
+    background-size: cover;
+    cursor: pointer;
+    caret-color: transparent;
+    height: 20px;
+    width: 20px;
   }
+
+  .commentStar {
+    background-image: url('/icons/star.png');
+  }
+
+  .commentEmptyStar {
+    position: absolute;
+    top: 0;
+    z-index: -1;
+    background-image: url('/icons/empty_star2.png');
+  }
+
+  .commentStar:hover {
+    transform: scale(1.2);
+    transition: transform 0.2s;
+  }
+
   .titleLeft {
     display: flex;
     gap: 20px;
   }
+
   .commentButton {
     width: 200px;
     height: 100%;
@@ -300,7 +302,7 @@ function Product() {
   const [product, setProduct] = useState();
   const { id } = useParams();
   const [feedbackReview, setFeedbackReview] = useState({
-    avgStar: 2.4,
+    avgStar: 3.1,
     totalComments: 50,
   });
   const [star, setStar] = useState(0);
@@ -320,6 +322,22 @@ function Product() {
       setStar(0);
     }, 80);
   };
+  const test = async() => {
+    //"https://smillzy.net/api/1.0/report/orders?id=10273"
+    const options = {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+    };
+    try {
+      const response = await fetch(
+        "https://smillzy.net/api/1.0/report/orders?id=10273",
+        options
+      );
+      console.log('response');
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  }
   useEffect(() => {
     async function getProduct() {
       const { data } = await api.getProduct(id);
@@ -389,35 +407,27 @@ function Product() {
       </Images>
       <hr />
       <CommentWrapper>
-        <div className="title">
-          <div className="titleLeft">
-            <p>評論</p>
-            <AvgStarGroup>
-              {[...Array(5)].map((_, index) => {
-                return (
-                  <div>
-                    <div
-                      key={index}
-                      className="commentStar"
-                      style={{ opacity: index < star ? '1' : 0 }}
-                      onMouseEnter={() => {
-                        hoverStar(index);
-                      }}
-                      onMouseLeave={leaveStar}
-                      onClick={() => {
-                        setStar(index + 1);
-                      }}
-                    ></div>
-                    <div key={index + 6} className="commentEmptyStar"></div>
-                  </div>
-                );
-              })}
-            </AvgStarGroup>
-          </div>
-
-          <button className="commentButton">評論商品</button>
+      <div className="title">
+        <div className="titleLeft">
+          <p>評論</p>
+          <AvgStarGroup>
+            {[...Array(5)].map((_, index) => (
+              <div key={index}>
+                <div
+                  className="commentStar"
+                  style={{ opacity: index < star ? '1' : 0 }}
+                  onMouseEnter={() => hoverStar(index)}
+                  onMouseLeave={leaveStar}
+                  onClick={() => setStar(index + 1)}
+                ></div>
+                <div className="commentEmptyStar"></div>
+              </div>
+            ))}
+          </AvgStarGroup>
         </div>
-      </CommentWrapper>
+        <button className="commentButton" onClick={test}>評論商品</button>
+      </div>
+    </CommentWrapper>
     </Wrapper>
   );
 }

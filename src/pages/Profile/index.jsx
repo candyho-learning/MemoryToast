@@ -24,7 +24,7 @@ const MemberWrapper = styled.div`
   border-radius: 10px;
   padding-top: 50px;
   flex-grow: 0.3;
-  background-color: #8caed7;
+  background-color: #2767b4;
   align-items: center;
   display: flex;
   flex-direction: column;
