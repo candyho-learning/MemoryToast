@@ -26,17 +26,17 @@ const ScratchOverlay = styled.div`
 `;
 
 const ScratchImage = styled.div`
-display:flex;
-justify-content: center;
-align-items: center;
-font-size:50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 50px;
   background-color: #6b5c5b;
   border-radius: 40px;
   color: #fff;
   width: 100%;
   height: 100%;
-  margin-top:1px;
-  p{
+  margin-top: 1px;
+  p {
     margin: 0;
     padding: 0;
   }
@@ -153,27 +153,48 @@ const ScratchCard = () => {
       if (transparentPercentage >= 45) {
         canvasContext.clearRect(0, 0, 200, 200);
         setGameOver(true);
-       
-        
       }
     };
 
     initializeCanvas();
-    
   }, []);
 
-  useEffect(()=>{
-    setTimeout(()=>{
-      if(coupon){
-        if(coupon.bingo){
-          alert('太神啦，準備購物囉!')
+  useEffect(() => {
+    setTimeout(() => {
+      if (coupon) {
+        if (coupon.bingo) {
+          addCoupon()
+          alert('太神啦，準備購物囉!');
+        } else {
+          alert('再接再厲，下次一定!');
         }
-        else{
-          alert('再接再厲，下次一定!')
-        }
+      
       }
-    },100)
-  },[gameOver])
+    }, 100);
+  }, [gameOver]);
+
+  const addCoupon = async () => {
+    const userProfileString = localStorage.getItem('userProfile');
+    const userProfile = JSON.parse(userProfileString);
+    const userId = userProfile.id;
+    console.log('使用者',userId)
+    try {
+      const response = await fetch(
+        `https://chouyu.site/api/1.0/coupon/update?num=1&userId=${userId}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      const data = await response.json();
+      console.log(data, '添加優惠券成功');
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
   return (
     <Container>
       <ScratchCanvas
