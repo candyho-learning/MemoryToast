@@ -123,7 +123,6 @@ const ScratchCard = () => {
 
       if (transparentPercentage >= 40) {
         canvasContext.clearRect(0, 0, 200, 200);
-        onComplete();
       }
     };
 
