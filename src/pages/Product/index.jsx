@@ -323,14 +323,14 @@ const TextWrapper = styled.div`
 `;
 
 const FeedbackCommentWrapper = styled.div`
-letter-spacing: 1px;
+  letter-spacing: 1px;
   width: 100%;
   padding: 20px 0;
   display: flex;
   flex-direction: column;
   gap: 20px;
-  .title{
-  
+  .title {
+    letter-spacing: 2px;
     font-size: 20px;
   }
   .reviewGroup {
@@ -368,23 +368,28 @@ letter-spacing: 1px;
       width: 12px;
     }
   }
-  .more{
-    width:100%;
-    height:50px;
+  .more {
+    width: 100%;
+    height: 50px;
     border-radius: 5px;
     background-color: #ddd;
     display: flex;
     justify-content: center;
     align-items: center;
-    gap:15px;
+    gap: 15px;
     letter-spacing: 1px;
     cursor: pointer;
-    img{
+    img {
       width: 20px;
       height: 20px;
       opacity: 0.7;
     }
   }
+`;
+const HasComment = styled.div`
+  
+  font-size: 20px;
+  margin: 20px auto 10px auto;
 `;
 const Loading = styled(ReactLoading)`
   margin-top: 50px;
@@ -404,7 +409,9 @@ function Product() {
     clickedNumber: 0,
   });
   const [comment, setComment] = useState('');
+  const [commentIndex, setCommentIndex] = useState(3);
   const [errMsg, setErrMsg] = useState('');
+  const [isPurchased, setIsPurchased] = useState();
 
   const starTimer = useRef(null);
   const [feedbackComment, setFeedbackComment] = useState([]);
@@ -424,11 +431,36 @@ function Product() {
       console.error('Error fetching data:', error);
     }
   };
+  const checkPurchased = (commentData) => {
+    const userProfileString = localStorage.getItem('userProfile');
+    const userProfile = JSON.parse(userProfileString);
+    const userId = userProfile.id;
+    const findComments = commentData.filter(
+      (comment) => comment?.userId === userId
+    );
+    const totalRate = commentData.reduce(
+      (acc, comment) => acc + comment.rate,
+      0
+    );
+
+    if (findComments.length > 0) {
+      setIsPurchased(true);
+    } else {
+      setIsPurchased(false);
+    }
+    const averageRate = totalRate / commentData.length;
+    setFeedbackReview({
+      avgStar: averageRate.toFixed(1),
+      totalComments: commentData.length,
+    });
+  };
+  const getcommentData = async () => {
+    const { data } = await getComment();
+    setFeedbackComment(data);
+    checkPurchased(data);
+  };
   useEffect(() => {
-    const getcommentData = async () => {
-      const { data } = await getComment();
-      setFeedbackComment(data);
-    };
+    
     getcommentData();
   }, []);
   useEffect(() => {
@@ -470,7 +502,7 @@ function Product() {
     });
   };
 
-  const sendReview = async() => {
+  const sendReview = async () => {
     if (!isLogin) {
       setCheckLogin(true);
     }
@@ -483,13 +515,15 @@ function Product() {
       return;
     }
     const userProfile = JSON.parse(localStorage.getItem('userProfile'));
-const userId = userProfile.id;
-console.log(typeof userId);
+    const userId = userProfile.id;
+    console.log(typeof userId);
     try {
-      console.log({userId:userId,
+      console.log({
+        userId: userId,
         productId: parseInt(id),
         rate: star.clickedNumber,
-        comment: comment});
+        comment: comment,
+      });
       const response = await fetch(
         `https://chouyu.site/api/1.0/comment/create`,
         {
@@ -498,39 +532,35 @@ console.log(typeof userId);
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            userId:userId,
+            userId: userId,
             productId: id,
             rate: star.clickedNumber,
-            comment: comment
-          })
+            comment: comment,
+          }),
         }
       );
-      console.log(response,'成功');
-      setStar({number: 0,
-        clicked: false,
-        clickedNumber: 0,
-      })
+      setStar({ number: 0, clicked: false, clickedNumber: 0 });
       setComment('');
       //const data = await response.json();
-      console.log(data,'成功');
+      setIsPurchased(true);
+      getcommentData()
+      alert('發表評論成功');
       return data;
     } catch (error) {
       console.error('Error fetching data:', error);
       throw error;
     }
   };
-
+  const handleMoreClick = () => {
+    setCommentIndex((prevState) => prevState + 3);
+  };
   const submitComment = (e) => {
     if (errMsg === '記得留言再送出評論哦') {
       setErrMsg('');
     }
     setComment(e.target.value);
   };
-  const showMoreComment = async () => {
-    const { data } = await getComment();
-    console.log(data);
-    if (data) setFeedbackComment([...feedbackComment, ...data]);
-  };
+
   if (!product) return null;
 
   return (
@@ -595,61 +625,70 @@ console.log(typeof userId);
             ))}
           </Images>
           <hr />
-          <CommentWrapper>
-            <div className="title">
-              <div className="titleLeft">
-                <p>評論</p>
-                <AvgStarGroup onMouseLeave={starReset}>
-                  {[...Array(5)].map((_, index) => {
-                    return (
-                      <div>
-                        <div
-                          key={index}
-                          className="commentStar"
-                          style={{ opacity: index < star.number ? '1' : 0 }}
-                          onMouseEnter={() => {
-                            hoverStar(index);
-                          }}
-                          onMouseLeave={leaveStar}
-                          onClick={() => {
-                            setStar({
-                              number: index + 1,
-                              clicked: true,
-                              clickedNumber: index + 1,
-                            });
-                            if (errMsg === '記得先給評分哦!') {
-                              setErrMsg('');
-                            }
-                          }}
-                        ></div>
-                        <div key={index + 6} className="commentEmptyStar"></div>
-                      </div>
-                    );
-                  })}
-                </AvgStarGroup>
-                <p className="errMsg">{errMsg}</p>
-              </div>
+          {!isPurchased && (
+            <CommentWrapper>
+              <div className="title">
+                <div className="titleLeft">
+                  <p>評論</p>
+                  <AvgStarGroup onMouseLeave={starReset}>
+                    {[...Array(5)].map((_, index) => {
+                      return (
+                        <div>
+                          <div
+                            key={index}
+                            className="commentStar"
+                            style={{ opacity: index < star.number ? '1' : 0 }}
+                            onMouseEnter={() => {
+                              hoverStar(index);
+                            }}
+                            onMouseLeave={leaveStar}
+                            onClick={() => {
+                              setStar({
+                                number: index + 1,
+                                clicked: true,
+                                clickedNumber: index + 1,
+                              });
+                              if (errMsg === '記得先給評分哦!') {
+                                setErrMsg('');
+                              }
+                            }}
+                          ></div>
+                          <div
+                            key={index + 6}
+                            className="commentEmptyStar"
+                          ></div>
+                        </div>
+                      );
+                    })}
+                  </AvgStarGroup>
+                  <p className="errMsg">{errMsg}</p>
+                </div>
 
-              <button className="commentButton" onClick={sendReview}>
-              {isLogin ? '發表評論' : '請先登入'}
-              </button>
-            </div>
-            <TextWrapper>
-              <textarea
-                name=""
-                id=""
-                cols="30"
-                rows="10"
-                placeholder="請寫下大大寶貴的意見"
-                onChange={submitComment}
-                value={comment}
-              ></textarea>
-            </TextWrapper>
-          </CommentWrapper>
+                <button className="commentButton" onClick={sendReview}>
+                  {isLogin ? '發表評論' : '請先登入'}
+                </button>
+              </div>
+              <TextWrapper>
+                <textarea
+                  name=""
+                  id=""
+                  cols="30"
+                  rows="10"
+                  placeholder="請寫下大大寶貴的意見"
+                  onChange={submitComment}
+                  value={comment}
+                ></textarea>
+              </TextWrapper>
+            </CommentWrapper>
+          )}
+          {isPurchased && <HasComment>已經對此商品留過評論囉!</HasComment>}
           <FeedbackCommentWrapper>
-            <p className='title'>最新評論</p>
+            {
+              <p className="title">{`最新評論(${feedbackReview.totalComments})`}</p>
+            }
             {feedbackComment &&
               feedbackComment.map((comment, index) => {
+                if (index + 1 > commentIndex) return;
                 return (
                   <div className="reviewGroup">
                     <div className="top">
@@ -675,9 +714,9 @@ console.log(typeof userId);
                 );
               })}
             {/* <button onClick={showMoreComment}>查看更多</button> */}
-              <div className='more' onClick={showMoreComment}>
-                Show more
-                </div>
+            <div className="more" onClick={handleMoreClick}>
+              Show more
+            </div>
           </FeedbackCommentWrapper>
         </Wrapper>
       )}
