@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
+import React, { useContext, useEffect, useState } from "react";
+import styled from "styled-components";
+import { AuthContext } from "../../context/authContext";
 const Container = styled.div`
   position: relative;
   border-radius: 0.6em;
@@ -44,30 +45,31 @@ const ScratchImage = styled.div`
 const ScratchCard = () => {
   const [coupon, setCoupon] = useState();
   const [gameOver, setGameOver] = useState(false);
+  const { setUser } = useContext(AuthContext);
 
   const randomCoupon = () => {
     const randomValue = Math.random();
     if (randomValue < 0.5) {
       setCoupon({
-        text: '再接再厲! 可悲仔～～',
+        text: "再接再厲! 可悲仔～～",
         bingo: false,
       });
     } else {
       setCoupon({
-        text: '恭喜中獎！ 全館商品5折',
+        text: "恭喜中獎！ 全館商品5折",
         bingo: true,
       });
     }
   };
   useEffect(() => {
     randomCoupon();
-    const canvasElement = document.getElementById('scratch');
-    const canvasContext = canvasElement.getContext('2d');
+    const canvasElement = document.getElementById("scratch");
+    const canvasContext = canvasElement.getContext("2d");
 
     const initializeCanvas = () => {
       const gradient = canvasContext.createLinearGradient(0, 0, 135, 135);
-      gradient.addColorStop(0, '#dddddd');
-      gradient.addColorStop(1, '#888888');
+      gradient.addColorStop(0, "#dddddd");
+      gradient.addColorStop(1, "#888888");
       canvasContext.fillStyle = gradient;
       canvasContext.fillRect(0, 0, 200, 200);
     };
@@ -76,26 +78,26 @@ const ScratchCard = () => {
 
     const eventTypes = {
       mouse: {
-        down: 'mousedown',
-        move: 'mousemove',
-        up: 'mouseup',
+        down: "mousedown",
+        move: "mousemove",
+        up: "mouseup",
       },
       touch: {
-        down: 'touchstart',
-        move: 'touchmove',
-        up: 'touchend',
+        down: "touchstart",
+        move: "touchmove",
+        up: "touchend",
       },
     };
 
-    let deviceType = '';
+    let deviceType = "";
 
     const checkIfTouchDevice = () => {
       try {
-        document.createEvent('TouchEvent');
-        deviceType = 'touch';
+        document.createEvent("TouchEvent");
+        deviceType = "touch";
         return true;
       } catch (e) {
-        deviceType = 'mouse';
+        deviceType = "mouse";
         return false;
       }
     };
@@ -133,10 +135,10 @@ const ScratchCard = () => {
     window.addEventListener(eventTypes[deviceType].down, handleMouseDown);
     window.addEventListener(eventTypes[deviceType].move, handleMouseMove);
     window.addEventListener(eventTypes[deviceType].up, handleMouseUp);
-    window.addEventListener('mouseleave', handleMouseUp);
+    window.addEventListener("mouseleave", handleMouseUp);
 
     const scratch = (x, y) => {
-      canvasContext.globalCompositeOperation = 'destination-out';
+      canvasContext.globalCompositeOperation = "destination-out";
       canvasContext.beginPath();
       canvasContext.arc(x, y, 12, 0, 2 * Math.PI);
       canvasContext.fill();
@@ -163,36 +165,41 @@ const ScratchCard = () => {
     setTimeout(() => {
       if (coupon) {
         if (coupon.bingo) {
-          addCoupon()
-          alert('太神啦，準備購物囉!');
+          addCoupon();
+          alert("太神啦，準備購物囉!");
         } else {
-          alert('再接再厲，下次一定!');
+          alert("再接再厲，下次一定!");
         }
-      
       }
     }, 100);
   }, [gameOver]);
 
   const addCoupon = async () => {
-    const userProfileString = localStorage.getItem('userProfile');
+    const userProfileString = localStorage.getItem("userProfile");
     const userProfile = JSON.parse(userProfileString);
     const userId = userProfile.id;
-    console.log('使用者',userId)
+    console.log("使用者", userId);
     try {
       const response = await fetch(
         `https://chouyu.site/api/1.0/coupon/update?num=1&userId=${userId}`,
         {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
         }
       );
 
       const data = await response.json();
-      console.log(data, '添加優惠券成功');
+      console.log(data, "添加優惠券成功");
+      setUser((prevUser) => {
+        return {
+          ...prevUser,
+          coupon: prevUser.coupon + 1,
+        };
+      });
     } catch (error) {
-      console.error('Error:', error);
+      console.error("Error:", error);
     }
   };
   return (
@@ -203,8 +210,8 @@ const ScratchCard = () => {
         width="200"
         height="200"
         style={{
-          width: '100%',
-          height: '100%',
+          width: "100%",
+          height: "100%",
           cursor:
             'url("https://cdn-icons-png.flaticon.com/32/5219/5219370.png"), auto',
         }}

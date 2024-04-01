@@ -117,6 +117,7 @@ export const AuthContextProvider = ({ children }) => {
         accessToken,
         login,
         logout,
+        setUser,
       }}
     >
       {children}

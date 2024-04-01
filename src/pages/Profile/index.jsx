@@ -147,15 +147,6 @@ function Profile() {
     { service: "收藏", path: "Starred" },
   ];
 
-  useEffect(() => {
-    const token = localStorage.getItem("accessToken");
-    (async () => {
-      console.log("getting user profile");
-      const data = await api.getProfile(token);
-      console.log(data);
-    })();
-  }, []);
-
   const renderContent = () => {
     if (loading) return <Loading type="spinningBubbles" color="#313538" />;
     if (isLogin && user) {
