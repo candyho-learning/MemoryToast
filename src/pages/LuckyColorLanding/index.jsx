@@ -1,8 +1,10 @@
 import styled, { keyframes } from "styled-components";
 import LoginWindow, { Button } from "../../components/LoginWindow";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context/authContext";
 import ReactLoading from "react-loading";
+import ScratchCard from "../../components/ScratchCard";
+import CarouselCard from "./CarouselCard";
 
 const LandingPageWrapper = styled.div`
   display: flex;
@@ -22,6 +24,14 @@ const LandingPageWrapper = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+
+    @media screen and (max-width: 1100px) {
+      flex-direction: column;
+
+      .products {
+        width: 50%;
+      }
+    }
 
     .products {
       width: 100%;
@@ -63,7 +73,7 @@ const Track = styled.div`
   position: absolute;
   white-space: nowrap;
   will-change: transform;
-  background-color: ${(props) => props.luckyColor || "#8b572a"};
+  background-color: ${(props) => props.luckycolor || "#8b572a"};
   height: 70px;
   line-height: 2;
   color: white;
@@ -75,21 +85,11 @@ const Track = styled.div`
 `;
 
 const GalleryContainer = styled.div`
-  display: grid;
-  grid-column-template: 200px 200px;
-  grid-row-template: 200px 200px;
   background-color: grey;
-
-  .product.main {
-    grid-row: 1/3;
-    grid-column: 2/3;
-    background-color: pink;
-  }
-
-  .product {
-    background-color: skyblue;
-    border: 2px solid white;
-    overflow: hidden;
+  width: 550px;
+  height: 680px;
+  @media screen and (max-width: 1100px) {
+    margin: 0 auto;
   }
 
   img {
@@ -140,11 +140,118 @@ const Loading = styled(ReactLoading)`
   margin-left: 50px;
 `;
 
+const Carousel = styled.div`
+  width: 100%;
+  height: 430px;
+  overflow: hidden;
+  background-color: #f1f1f1;
+
+  .carousel-track {
+    display: flex;
+    justify-content: center;
+    height: 100%;
+    padding: 30px 0;
+    transition: all 1s ease-in-out;
+
+    .card {
+      width: 400px;
+      height: 100%;
+      background-color: #f1f1f1;
+      flex-basis: 400px;
+      flex-shrink: 0;
+      margin: 0 50px;
+      box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+      border-radius: 20px;
+
+      &:first-child {
+        margin-left: 0;
+      }
+
+      &:last-child {
+        margin-right: 0;
+      }
+
+      img {
+        height: 70%;
+        width: 100%;
+        object-fit: cover;
+        border-top-right-radius: 20px;
+        border-top-left-radius: 20px;
+      }
+      .card-text-content {
+        padding: 20px 10px;
+
+        h3 {
+          margin: 15px 0;
+          font-weight: 600;
+          font-size: 24px;
+        }
+
+        button {
+          border: none;
+          padding: 5px 15px;
+          border-radius: 10px;
+          background-color: black;
+          color: white;
+        }
+      }
+    }
+  }
+`;
+
+const ButtonsWrapper = styled.div`
+  display: flex;
+  margin-top: 25px;
+
+  button {
+    height: 50px;
+    width: 50px;
+    font-size: 40px;
+    border: none;
+    background-color: transparent;
+    margin: 0 20px;
+  }
+`;
 const marqueeSentence = "Infinite Marquee with long sentence";
 
 export default function LuckyColorLanding() {
   const { isLogin, user, loading } = useContext(AuthContext);
-  console.log(user,'color頁')
+  const [mainImage, setMainImage] = useState(
+    "https://images.unsplash.com/photo-1576740488939-3503ae080975?crop=entropy&cs=srgb&fm=jpg&ixid=M3wzMjM4NDZ8MHwxfHJhbmRvbXx8fHx8fHx8fDE3MTE4NzgxMTZ8&ixlib=rb-4.0.3&q=85"
+  );
+  const [moreProducts, setMoreProducts] = useState();
+
+  const [activeIndex, setActiveIndex] = useState(2);
+  const cardWidth = 400; // Match this with your actual card width + margin/gap
+  const handleScroll = (direction) => {
+    setActiveIndex((prevIndex) =>
+      direction === "left"
+        ? Math.max(prevIndex - 1, 0)
+        : Math.min(prevIndex + 1, 4)
+    );
+  };
+  console.log(activeIndex);
+
+  useEffect(() => {
+    console.log(user.color.slice(1));
+    const getRecommendedProducts = async () => {
+      const response = await fetch(
+        `https://traviss.beauty/api/1.0/recommendation?color=${user.color.slice(
+          1
+        )}&gender=men`
+      );
+      if (!response.ok) {
+        console.log("cannot fetch recommended product");
+      }
+      const { data } = await response.json();
+      console.log(data);
+      const mainImage = data.main_image;
+      const moreProducts = data.images;
+      mainImage && setMainImage(mainImage);
+      moreProducts && setMoreProducts(moreProducts);
+    };
+    getRecommendedProducts();
+  }, [user]);
   if (loading)
     return (
       <LandingPageWrapper>
@@ -157,7 +264,7 @@ export default function LuckyColorLanding() {
     <LandingPageWrapper>
       <h1>本日運勢 🔮</h1>
       <Marquee>
-        <Track luckyColor={user.color}>
+        <Track luckycolor={user.color}>
           <div className="content">{marqueeSentence.repeat(10)}</div>
         </Track>
       </Marquee>
@@ -165,15 +272,7 @@ export default function LuckyColorLanding() {
       <div className="recommended-products-section">
         <div className="products">
           <GalleryContainer>
-            <div className="product main">
-              <img src="https://images.unsplash.com/photo-1495121605193-b116b5b9c5fe?crop=entropy&cs=srgb&fm=jpg&ixid=M3wzMjM4NDZ8MHwxfHJhbmRvbXx8fHx8fHx8fDE3MTE3NzM5MDN8&ixlib=rb-4.0.3&q=85" />
-            </div>
-            <div className="product">
-              <img src="https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?crop=entropy&cs=srgb&fm=jpg&ixid=M3wzMjM4NDZ8MHwxfHJhbmRvbXx8fHx8fHx8fDE3MTE3NzM5MDN8&ixlib=rb-4.0.3&q=85" />
-            </div>
-            <div className="product">
-              <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?crop=entropy&cs=srgb&fm=jpg&ixid=M3wzMjM4NDZ8MHwxfHJhbmRvbXx8fHx8fHx8fDE3MTE3NzQ1OTJ8&ixlib=rb-4.0.3&q=85" />
-            </div>
+            <img src={mainImage} />
           </GalleryContainer>
         </div>
         <div className="texts">
@@ -181,9 +280,32 @@ export default function LuckyColorLanding() {
           <h1>These would look great on you, don't you think so?</h1>
         </div>
       </div>
+      <h1>更多推薦商品</h1>
+      <Carousel luckycolor={user.color}>
+        <div
+          className="carousel-track"
+          style={{
+            transform: `translateX(${(activeIndex - 2) * -500}px)`,
+            // transform: "translateX(-500px)",
+          }}
+        >
+          {moreProducts &&
+            moreProducts.map((img) => <CarouselCard url={img} />)}
+          <CarouselCard />
+          <CarouselCard />
+          <CarouselCard />
+          <CarouselCard />
+          <CarouselCard />
+        </div>
+      </Carousel>
+      <ButtonsWrapper>
+        <button onClick={() => handleScroll("left")}>⬅️</button>
+        <button onClick={() => handleScroll("right")}>➡️</button>
+      </ButtonsWrapper>
 
       <h1>刮刮樂遊戲 🎲</h1>
       <GameSection>
+        <ScratchCard />
         <button>Start Game</button>
       </GameSection>
     </LandingPageWrapper>

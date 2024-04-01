@@ -24,7 +24,7 @@ export const LoginBox = styled.div`
   min-width: 300px;
   min-height: 500px;
   width: 70%;
-  height: 65%;
+  height: 85%;
   max-width: 800px;
   max-height: 800px;
   z-index: 5;
@@ -120,7 +120,7 @@ export const Button = styled.button`
   }
 `;
 
-export default function LoginWindow({setCheckLogin}) {
+export default function LoginWindow({ setCheckLogin }) {
   const [userEmail, setUserEmail] = useState("");
   const [userPassword, setUserPassword] = useState("");
   const { isLogin, login } = useContext(AuthContext);
@@ -138,21 +138,21 @@ export default function LoginWindow({setCheckLogin}) {
 
     const data = login(loginData);
     console.log(data);
-    if(setCheckLogin!==undefined){
-      console.log('YO')
-      setCheckLogin(false)
+    if (setCheckLogin !== undefined) {
+      console.log("YO");
+      setCheckLogin(false);
     }
     console.log(`login status: ${isLogin}`);
   }
   const loginFunc = async (formState) => {
     const options = {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        provider:'native',
-        email:userEmail,
-        password:userPassword,
-        access_token:''
+        provider: "native",
+        email: userEmail,
+        password: userPassword,
+        access_token: "",
       }),
     };
     try {
@@ -161,10 +161,10 @@ export default function LoginWindow({setCheckLogin}) {
         options
       );
       const data = await response.json();
-     
+
       console.log(data);
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error("Error fetching data:", error);
     }
   };
   return (

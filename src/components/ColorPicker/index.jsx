@@ -1,8 +1,15 @@
-import React, { useState, Fragment, useEffect, useRef } from 'react';
-import Wheel from '@uiw/react-color-wheel';
-import { hsvaToHex } from '@uiw/color-convert';
-import styled from 'styled-components';
+import React, { useState, Fragment, useEffect, useRef } from "react";
+import Wheel from "@uiw/react-color-wheel";
+import { hsvaToHex } from "@uiw/color-convert";
+import styled from "styled-components";
 const ColorPickerWrapper = styled.div`
+  display: flex;
+  flex-direction: column-reverse;
+
+  .wheel {
+    display: flex;
+    justify-content: flex-end;
+  }
 `;
 
 const PanetoneWrapper = styled.div`
@@ -35,9 +42,9 @@ const WhiteDiv = styled.div`
     font-size: 14px;
   }
 `;
-function ColorPicker({ setColorName, colorName, setColorCode }) {
+function ColorPicker({ setColorName, colorName, setLuckyColorCode }) {
   const [hsva, setHsva] = useState({ h: 214, s: 43, v: 90, a: 1 });
-  const [hex, setHex] = useState('');
+  const [hex, setHex] = useState("");
   // const [colorName, setColorName] = useState("");
   const isLoading = useRef(false);
   const firstLoading = useRef(true);
@@ -54,15 +61,16 @@ function ColorPicker({ setColorName, colorName, setColorCode }) {
       const colorData = await getColorDataFromHSV();
       isLoading.current = false;
       const colorName = colorData.name.value; //color name
-      const colorRGB = colorData.rgb.value; //rgb color code
-      setColorCode(colorRGB);
+      const colorHex = colorData.hex.value; //rgb color code
+      setHex(colorHex);
+      setLuckyColorCode(colorHex);
       setColorName(colorName);
     }, 50);
 
     return () => {
       clearTimeout(timerId);
     };
-  }, [hsva]);
+  }, [hsva, hex]);
 
   async function getColorDataFromHSV() {
     const hsvQueryString = `hsv=${hsva.h},${hsva.s},${hsva.v}`;
@@ -75,21 +83,23 @@ function ColorPicker({ setColorName, colorName, setColorCode }) {
           `Failed to fetch data from ${apiUrl}. Status: ${response.status}`
         );
       }
-
       const data = await response.json();
       return data;
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error("Error fetching data:", error);
       return null;
     }
   }
 
   return (
     <ColorPickerWrapper>
-      <Wheel
-        color={hsva}
-        onChange={(color) => setHsva({ ...hsva, ...color.hsva })}
-      />
+      <div className="wheel">
+        <Wheel
+          color={hsva}
+          onChange={(color) => setHsva({ ...hsva, ...color.hsva })}
+        />
+      </div>
+
       <PanetoneWrapper>
         <ColorDiv
           style={{

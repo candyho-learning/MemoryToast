@@ -1,12 +1,12 @@
-import { useEffect, useState, useRef } from 'react';
-import { useParams } from 'react-router-dom';
-import { useContext } from 'react';
-import { AuthContext } from '../../context/authContext';
-import styled from 'styled-components';
-import api from '../../utils/api';
-import ProductVariants from './ProductVariants';
-import LoginWindow from '../../components/LoginWindow';
-import ReactLoading from 'react-loading';
+import { useEffect, useState, useRef } from "react";
+import { useParams } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "../../context/authContext";
+import styled from "styled-components";
+import api from "../../utils/api";
+import ProductVariants from "./ProductVariants";
+import LoginWindow from "../../components/LoginWindow";
+import ReactLoading from "react-loading";
 
 const Wrapper = styled.div`
   max-width: 960px;
@@ -151,7 +151,7 @@ const StoryTitle = styled.div`
   }
 
   &::after {
-    content: '';
+    content: "";
     height: 1px;
     flex-grow: 1;
     background-color: #3f3a3a;
@@ -186,9 +186,7 @@ const Images = styled.div`
 `;
 
 const Image = styled.img`
-  @media screen and (max-width: 1279px) {
-    width: 100%;
-  }
+  width: 100%;
 
   & + & {
     margin-top: 30px;
@@ -273,14 +271,14 @@ const CommentWrapper = styled.div`
   }
 
   .commentStar {
-    background-image: url('/icons/star.png');
+    background-image: url("/icons/star.png");
   }
 
   .commentEmptyStar {
     position: absolute;
     top: 0;
     z-index: -1;
-    background-image: url('/icons/empty_star2.png');
+    background-image: url("/icons/empty_star2.png");
   }
 
   .commentStar:hover {
@@ -323,14 +321,13 @@ const TextWrapper = styled.div`
 `;
 
 const FeedbackCommentWrapper = styled.div`
-letter-spacing: 1px;
+  letter-spacing: 1px;
   width: 100%;
   padding: 20px 0;
   display: flex;
   flex-direction: column;
   gap: 20px;
-  .title{
-  
+  .title {
     font-size: 20px;
   }
   .reviewGroup {
@@ -368,18 +365,18 @@ letter-spacing: 1px;
       width: 12px;
     }
   }
-  .more{
-    width:100%;
-    height:50px;
+  .more {
+    width: 100%;
+    height: 50px;
     border-radius: 5px;
     background-color: #ddd;
     display: flex;
     justify-content: center;
     align-items: center;
-    gap:15px;
+    gap: 15px;
     letter-spacing: 1px;
     cursor: pointer;
-    img{
+    img {
       width: 20px;
       height: 20px;
       opacity: 0.7;
@@ -403,8 +400,8 @@ function Product() {
     clicked: false,
     clickedNumber: 0,
   });
-  const [comment, setComment] = useState('');
-  const [errMsg, setErrMsg] = useState('');
+  const [comment, setComment] = useState("");
+  const [errMsg, setErrMsg] = useState("");
 
   const starTimer = useRef(null);
   const [feedbackComment, setFeedbackComment] = useState([]);
@@ -414,14 +411,14 @@ function Product() {
         `https://chouyu.site/api/1.0/comments?id=${id}`,
         {
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
         }
       );
       return await response.json();
       console.log(data);
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error("Error fetching data:", error);
     }
   };
   useEffect(() => {
@@ -470,59 +467,58 @@ function Product() {
     });
   };
 
-  const sendReview = async() => {
+  const sendReview = async () => {
     if (!isLogin) {
       setCheckLogin(true);
     }
     if (star.number === 0) {
-      setErrMsg('記得先給評分哦!');
+      setErrMsg("記得先給評分哦!");
       return;
     }
     if (!comment) {
-      setErrMsg('記得留言再送出評論哦!');
+      setErrMsg("記得留言再送出評論哦!");
       return;
     }
-    const userProfile = JSON.parse(localStorage.getItem('userProfile'));
-const userId = userProfile.id;
-console.log(typeof userId);
+    const userProfile = JSON.parse(localStorage.getItem("userProfile"));
+    const userId = userProfile.id;
+    console.log(typeof userId);
     try {
-      console.log({userId:userId,
+      console.log({
+        userId: userId,
         productId: parseInt(id),
         rate: star.clickedNumber,
-        comment: comment});
+        comment: comment,
+      });
       const response = await fetch(
         `https://chouyu.site/api/1.0/comment/create`,
         {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            userId:userId,
+            userId: userId,
             productId: id,
             rate: star.clickedNumber,
-            comment: comment
-          })
+            comment: comment,
+          }),
         }
       );
-      console.log(response,'成功');
-      setStar({number: 0,
-        clicked: false,
-        clickedNumber: 0,
-      })
-      setComment('');
+      console.log(response, "成功");
+      setStar({ number: 0, clicked: false, clickedNumber: 0 });
+      setComment("");
       //const data = await response.json();
-      console.log(data,'成功');
+      console.log(data, "成功");
       return data;
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error("Error fetching data:", error);
       throw error;
     }
   };
 
   const submitComment = (e) => {
-    if (errMsg === '記得留言再送出評論哦') {
-      setErrMsg('');
+    if (errMsg === "記得留言再送出評論哦") {
+      setErrMsg("");
     }
     setComment(e.target.value);
   };
@@ -606,7 +602,7 @@ console.log(typeof userId);
                         <div
                           key={index}
                           className="commentStar"
-                          style={{ opacity: index < star.number ? '1' : 0 }}
+                          style={{ opacity: index < star.number ? "1" : 0 }}
                           onMouseEnter={() => {
                             hoverStar(index);
                           }}
@@ -617,8 +613,8 @@ console.log(typeof userId);
                               clicked: true,
                               clickedNumber: index + 1,
                             });
-                            if (errMsg === '記得先給評分哦!') {
-                              setErrMsg('');
+                            if (errMsg === "記得先給評分哦!") {
+                              setErrMsg("");
                             }
                           }}
                         ></div>
@@ -631,7 +627,7 @@ console.log(typeof userId);
               </div>
 
               <button className="commentButton" onClick={sendReview}>
-              {isLogin ? '發表評論' : '請先登入'}
+                {isLogin ? "發表評論" : "請先登入"}
               </button>
             </div>
             <TextWrapper>
@@ -647,7 +643,7 @@ console.log(typeof userId);
             </TextWrapper>
           </CommentWrapper>
           <FeedbackCommentWrapper>
-            <p className='title'>最新評論</p>
+            <p className="title">最新評論</p>
             {feedbackComment &&
               feedbackComment.map((comment, index) => {
                 return (
@@ -660,8 +656,8 @@ console.log(typeof userId);
                           <img
                             src={
                               comment.rate >= index + 1
-                                ? '/icons/star.png'
-                                : '/icons/empty_star2.png'
+                                ? "/icons/star.png"
+                                : "/icons/empty_star2.png"
                             }
                             alt=""
                           />
@@ -675,9 +671,9 @@ console.log(typeof userId);
                 );
               })}
             {/* <button onClick={showMoreComment}>查看更多</button> */}
-              <div className='more' onClick={showMoreComment}>
-                Show more
-                </div>
+            <div className="more" onClick={showMoreComment}>
+              Show more
+            </div>
           </FeedbackCommentWrapper>
         </Wrapper>
       )}
