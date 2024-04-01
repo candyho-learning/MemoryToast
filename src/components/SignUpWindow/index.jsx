@@ -61,7 +61,7 @@ const SuccessMessage = styled.div`
 
 export default function SignUpWindow() {
   const [formState, setFormState] = useState(INITIAL_FORM_FIELDS);
-  const [luckyColorCode, setLuckyColorCode] = useState("pink");
+  const [luckyColorCode, setLuckyColorCode] = useState();
   const [luckyColorName, setLuckyColorName] = useState("");
   const [showColorPicker, setShowColorPicker] = useState(false);
   const { login, isLogin, user } = useContext(AuthContext);
@@ -129,13 +129,13 @@ export default function SignUpWindow() {
   useEffect(() => {
     setFormState({
       ...formState,
-      colorCode: luckyColorName,
+      colorCode: luckyColorCode,
     });
-  }, [luckyColorName]);
+  }, [luckyColorCode]);
   if (isLogin) {
     return (
       <SuccessMessage color={luckyColorCode}>
-        <h1>{`Glad to Have You On Board!`}</h1>
+        <h1>{`Glad to Have You On Board, ${user.name}!`}</h1>
         <a href="/">Go to hompage</a>
       </SuccessMessage>
     );
@@ -182,7 +182,9 @@ export default function SignUpWindow() {
                 type={item.type}
                 name={item.name}
                 placeholder={item.placeholder}
-                onChange={handleFormChange}
+                onChange={
+                  item.name === "colorCode" ? () => {} : handleFormChange
+                }
                 value={
                   item.name === "colorCode"
                     ? luckyColorCode
