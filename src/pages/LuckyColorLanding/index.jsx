@@ -276,7 +276,7 @@ export default function LuckyColorLanding() {
   useEffect(() => {
     const getOtherProducts = async () => {
       const response = await fetch(
-        `https://traviss.beauty/api/1.0/recommendation_by_product?product_id=${mainProductId}`
+        `https://traviss.beauty/api/1.0/recommendationproduct?product_id=${mainProductId}`
       );
 
       if (!response.ok) {
