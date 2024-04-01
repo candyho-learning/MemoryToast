@@ -13,7 +13,7 @@ const LandingPageWrapper = styled.div`
   align-items: center;
   max-width: 1500px;
   margin: 0 auto;
-  padding: 30px;
+  padding: 30px 50px;
 
   h1 {
     font-size: 35px;
@@ -266,6 +266,7 @@ export default function LuckyColorLanding() {
       console.log(data);
       const mainImage = data.main_image;
       const mainProductId = data.id;
+      console.log(`mainProduct id is ${mainProductId}`);
       mainImage && setMainImage(mainImage);
       mainProductId && setMainProductId(mainProductId);
     };
@@ -287,7 +288,7 @@ export default function LuckyColorLanding() {
       console.log(data);
       setMoreProducts(data);
     };
-    getOtherProducts();
+    mainProductId && getOtherProducts();
   }, [mainProductId]);
   if (loading)
     return (
