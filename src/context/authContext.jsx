@@ -80,7 +80,15 @@ export const AuthContextProvider = ({ children }) => {
   const login = async (loginData) => {
     setLoading(true);
     // TODO: Send data to Login API
-    const { data } = await api.signin(loginData);
+    const response = await api.signin(loginData);
+    if (!response) {
+      console.log("log in failed");
+      window.localStorage.removeItem("accessToken");
+      window.localStorage.removeItem("userProfile");
+      setLoading(false);
+      return null;
+    }
+    const { data } = response;
     if (data) {
       setLoading(false);
       setIsLogin(true);
@@ -88,12 +96,6 @@ export const AuthContextProvider = ({ children }) => {
       localStorage.setItem("accessToken", JSON.stringify(data.access_token));
       localStorage.setItem("userProfile", JSON.stringify(data.user));
       return data;
-    } else {
-      console.log("log in failed");
-      window.localStorage.removeItem("accessToken");
-      window.localStorage.removeItem("userProfile");
-      setLoading(false);
-      return null;
     }
   };
 

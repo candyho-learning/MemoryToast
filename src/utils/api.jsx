@@ -49,6 +49,7 @@ const api = {
       return data;
     } catch (err) {
       console.error(err);
+      return null;
     }
   },
   async getProfile(token) {
