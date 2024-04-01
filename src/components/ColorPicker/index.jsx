@@ -1,17 +1,55 @@
-import React, { useState, Fragment, useEffect, useRef } from "react";
-import Wheel from "@uiw/react-color-wheel";
-import { hsvaToHex } from "@uiw/color-convert";
+import React, { useState, Fragment, useEffect, useRef } from 'react';
+import Wheel from '@uiw/react-color-wheel';
+import { hsvaToHex } from '@uiw/color-convert';
+import styled from 'styled-components';
+const ColorPickerWrapper = styled.div`
+`;
 
+const PanetoneWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 165px;
+`;
+const ColorDiv = styled.div`
+  width: 100%;
+  background-color: #fff;
+  height: 140px;
+`;
+const WhiteDiv = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background-color: #fff;
+  height: 90px;
+  padding: 8px;
+  p:nth-of-type(1) {
+    font-weight: bold;
+    font-size: 20px;
+  }
+  p {
+    display: block;
+    width: 100%;
+    margin: 0 !important;
+    color: black;
+    font-size: 14px;
+  }
+`;
 function ColorPicker({ setColorName, colorName, setColorCode }) {
   const [hsva, setHsva] = useState({ h: 214, s: 43, v: 90, a: 1 });
+  const [hex, setHex] = useState('');
   // const [colorName, setColorName] = useState("");
   const isLoading = useRef(false);
-
+  const firstLoading = useRef(true);
   useEffect(() => {
     let timerId;
     if (isLoading.current) return;
 
     timerId = setTimeout(async () => {
+      if (firstLoading.current) {
+        firstLoading.current = false;
+        return;
+      }
       isLoading.current = true;
       const colorData = await getColorDataFromHSV();
       isLoading.current = false;
@@ -41,28 +79,30 @@ function ColorPicker({ setColorName, colorName, setColorCode }) {
       const data = await response.json();
       return data;
     } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error('Error fetching data:', error);
       return null;
     }
   }
 
   return (
-    <Fragment>
+    <ColorPickerWrapper>
       <Wheel
         color={hsva}
         onChange={(color) => setHsva({ ...hsva, ...color.hsva })}
       />
-      <div
-        style={{
-          width: "100%",
-          height: 34,
-          marginTop: 20,
-          background: hsvaToHex(hsva),
-        }}
-      >
-        <p>{colorName}</p>
-      </div>
-    </Fragment>
+      <PanetoneWrapper>
+        <ColorDiv
+          style={{
+            background: hsvaToHex(hsva),
+          }}
+        ></ColorDiv>
+        <WhiteDiv>
+          <p>Lucky Color</p>
+          <p>{hex}</p>
+          <p>{colorName}</p>
+        </WhiteDiv>
+      </PanetoneWrapper>
+    </ColorPickerWrapper>
   );
 }
 

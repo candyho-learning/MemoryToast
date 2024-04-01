@@ -1,6 +1,35 @@
 import React, { useEffect } from 'react';
-import './index.css';
+import styled from 'styled-components';
+const Container = styled.div`
+  position: relative;
+  border-radius: 0.6em;
+  width: 600px;
+  height: 400px;
+`;
 
+const ScratchCanvas = styled.canvas`
+  height: 200px;
+  width: 200px;
+  position: absolute;
+  transform: translate(-50%, -50%);
+  top: 50%;
+  left: 50%;
+  text-align: center;
+  cursor: grabbing;
+  border-radius: 2em;
+`;
+
+const ScratchOverlay = styled.div`
+  border-radius: 40px;
+  width: 100%;
+  height: 100%;
+`;
+
+const ScratchImage = styled.img`
+  border-radius: 40px;
+  width: 100%;
+  height: 100%;
+`;
 const ScratchCard = () => {
   useEffect(() => {
     const canvasElement = document.getElementById('scratch');
@@ -8,7 +37,7 @@ const ScratchCard = () => {
 
     const initializeCanvas = () => {
       const gradient = canvasContext.createLinearGradient(0, 0, 135, 135);
-      gradient.addColorStop(0, '#dddddd'); // 开始颜色为灰色
+      gradient.addColorStop(0, '#dddddd');
       gradient.addColorStop(1, '#888888');
       canvasContext.fillStyle = gradient;
       canvasContext.fillRect(0, 0, 200, 200);
@@ -44,8 +73,12 @@ const ScratchCard = () => {
 
     const getMouseCoordinates = (event) => {
       const rect = canvasElement.getBoundingClientRect();
-      const x = (event.clientX - rect.left) / (rect.right - rect.left) * canvasElement.width;
-      const y = (event.clientY - rect.top) / (rect.bottom - rect.top) * canvasElement.height;
+      const x =
+        ((event.clientX - rect.left) / (rect.right - rect.left)) *
+        canvasElement.width;
+      const y =
+        ((event.clientY - rect.top) / (rect.bottom - rect.top)) *
+        canvasElement.height;
       return { x, y };
     };
 
@@ -68,48 +101,53 @@ const ScratchCard = () => {
       isDragging = false;
     };
 
-    canvasElement.addEventListener(eventTypes[deviceType].down, handleMouseDown);
-    canvasElement.addEventListener(eventTypes[deviceType].move, handleMouseMove);
-    canvasElement.addEventListener(eventTypes[deviceType].up, handleMouseUp);
-    canvasElement.addEventListener('mouseleave', handleMouseUp);
+    window.addEventListener(eventTypes[deviceType].down, handleMouseDown);
+    window.addEventListener(eventTypes[deviceType].move, handleMouseMove);
+    window.addEventListener(eventTypes[deviceType].up, handleMouseUp);
+    window.addEventListener('mouseleave', handleMouseUp);
 
     const scratch = (x, y) => {
-        canvasContext.globalCompositeOperation = 'destination-out';
-        canvasContext.beginPath();
-        canvasContext.arc(x, y, 12, 0, 2 * Math.PI);
-        canvasContext.fill();
-      
-        const pixels = canvasContext.getImageData(0, 0, 200, 200).data;
-        let transparentPixelCount = 0;
-        for (let i = 0; i < pixels.length; i += 4) {
-          if (pixels[i + 3] === 0) {
-            transparentPixelCount++;
-          }
+      canvasContext.globalCompositeOperation = 'destination-out';
+      canvasContext.beginPath();
+      canvasContext.arc(x, y, 12, 0, 2 * Math.PI);
+      canvasContext.fill();
+
+      const pixels = canvasContext.getImageData(0, 0, 200, 200).data;
+      let transparentPixelCount = 0;
+      for (let i = 0; i < pixels.length; i += 4) {
+        if (pixels[i + 3] === 0) {
+          transparentPixelCount++;
         }
-        const transparentPercentage = (transparentPixelCount / (200 * 200)) * 100;
-      
-        if (transparentPercentage >= 40) {
-          canvasContext.clearRect(0, 0, 200, 200);
-          onComplete(); 
-        }
-      };
+      }
+      const transparentPercentage = (transparentPixelCount / (200 * 200)) * 100;
+
+      if (transparentPercentage >= 40) {
+        canvasContext.clearRect(0, 0, 200, 200);
+        onComplete();
+      }
+    };
 
     initializeCanvas();
   }, []);
 
   return (
-    <div className="container">
-      <canvas
+    <Container>
+      <ScratchCanvas
         id="scratch"
         className="scratch-canvas"
         width="200"
         height="200"
-        style={{ width: '100%', height: '100%', cursor: 'url("https://cdn-icons-png.flaticon.com/32/5219/5219370.png"), auto' }}
-      ></canvas>
-      <div className="scratch-overlay">
-        <img className="scratchimg" src="../../../public/card.jpg" alt="Scratch Card" />
-      </div>
-    </div>
+        style={{
+          width: '100%',
+          height: '100%',
+          cursor:
+            'url("https://cdn-icons-png.flaticon.com/32/5219/5219370.png"), auto',
+        }}
+      ></ScratchCanvas>
+      <ScratchOverlay>
+        <ScratchImage src="../../../public/card.jpg" alt="Scratch Card" />
+      </ScratchOverlay>
+    </Container>
   );
 };
 
