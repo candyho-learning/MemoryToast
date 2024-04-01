@@ -548,7 +548,7 @@ function Product() {
     setCommentIndex((prevState) => prevState + 3);
   };
   const submitComment = (e) => {
-    if (errMsg === '記得留言再送出評論哦') {
+    if (errMsg === '記得留言再送出評論哦!') {
       setErrMsg('');
     }
     setComment(e.target.value);

@@ -7,7 +7,7 @@ const Wrapper = styled.div`
   padding: 160px 20px 60px 20px;
   height: calc(100% - 225px);
   background-color: #696969;
-  background-image: url('/thankyou.jpg');
+  background-image: url('https://e0.pxfuel.com/wallpapers/815/1021/desktop-wallpaper-wide-collections-grey-blur-radial-gradient.jpg');
   background-size: cover;
   display: flex;
   flex-direction: column;

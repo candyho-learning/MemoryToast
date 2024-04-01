@@ -296,7 +296,7 @@ function Checkout() {
   const formRef = useRef();
 
   const { jwtToken, isLogin, login, user } = useContext(AuthContext);
-  const { cartItems, setCartItems } = useContext(CartContext);
+  const { cartItems, setCartItems,cartCount } = useContext(CartContext);
 
   useEffect(() => {
     const setupTappay = async () => {
@@ -381,6 +381,8 @@ function Checkout() {
   //   }
   // }
     const checkout = () =>{
+      localStorage.removeItem('cartItems');
+      setCartItems(0)
       navigate('/thankyou', { state: { data: subtotal + freight - (isUseCoupon ? Math.floor(subtotal * 0.5) : 0) } });
     }
   return (
