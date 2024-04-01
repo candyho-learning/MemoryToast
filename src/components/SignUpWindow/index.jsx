@@ -32,9 +32,9 @@ const Select = styled.select`
   margin: 10px 0;
   width: 100%;
   border: none;
-  background: linear-gradient(135deg, #9c8c7c 30%, #b59f8d);
+  background: #f1f1f1;
   padding: 3px 10px;
-  color: white;
+  color: black;
 `;
 
 const SuccessMessage = styled.div`
@@ -58,6 +58,15 @@ const SuccessMessage = styled.div`
     font-size: 24px;
   }
 `;
+
+const Link = styled.a`
+
+  margin-top: 10px;
+  font-size: 11px;
+  color: #313538;
+  &:hover {
+    cursor: pointer;
+  `;
 
 export default function SignUpWindow() {
   const [formState, setFormState] = useState(INITIAL_FORM_FIELDS);
@@ -209,6 +218,7 @@ export default function SignUpWindow() {
             </Select>
             <Button>Sign Up</Button>
           </form>
+          <Link href="/signup">Already have an account? Log in here.</Link>
         </div>
 
         {/* Color picker */}

@@ -271,7 +271,7 @@ export default function LuckyColorLanding() {
       mainProductId && setMainProductId(mainProductId);
     };
 
-    getRecommendedProducts();
+    user && getRecommendedProducts();
   }, [user]);
 
   useEffect(() => {
@@ -290,6 +290,7 @@ export default function LuckyColorLanding() {
     };
     mainProductId && getOtherProducts();
   }, [mainProductId]);
+
   if (loading)
     return (
       <LandingPageWrapper>
@@ -338,11 +339,6 @@ export default function LuckyColorLanding() {
             moreProducts.map((item, i) => (
               <CarouselCard url={item.main_image} key={item.id} />
             ))}
-          <CarouselCard />
-          <CarouselCard />
-          <CarouselCard />
-          <CarouselCard />
-          <CarouselCard />
         </div>
       </Carousel>
       <ButtonsWrapper>
