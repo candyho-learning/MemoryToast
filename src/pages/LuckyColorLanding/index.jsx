@@ -51,7 +51,7 @@ const LandingPageWrapper = styled.div`
 
 const marqueeAnimation = keyframes`
   from {
-    transform: translateX(0%);
+    transform: translateX(30%);
   }
   to {
     transform: translateX(-100%);
@@ -80,7 +80,7 @@ const Track = styled.div`
   font-weight: 800;
   .content {
     font-size: 34px;
-    animation: ${marqueeAnimation} 100s linear infinite;
+    animation: ${marqueeAnimation} 30s linear infinite;
   }
 `;
 
@@ -212,7 +212,8 @@ const ButtonsWrapper = styled.div`
     margin: 0 20px;
   }
 `;
-const marqueeSentence = "Infinite Marquee with long sentence";
+const marqueeSentence =
+  "今天，星星閃爍著神秘的光芒，預示著你將迎來許多機遇和挑戰。勇敢地面對這些挑戰，並抓住機遇，因為它們將帶給你成長和成功的機會。🎁";
 
 export default function LuckyColorLanding() {
   const { isLogin, user, loading } = useContext(AuthContext);
@@ -222,7 +223,6 @@ export default function LuckyColorLanding() {
   const [moreProducts, setMoreProducts] = useState();
 
   const [activeIndex, setActiveIndex] = useState(2);
-  const cardWidth = 400; // Match this with your actual card width + margin/gap
   const handleScroll = (direction) => {
     setActiveIndex((prevIndex) =>
       direction === "left"
@@ -265,7 +265,7 @@ export default function LuckyColorLanding() {
       <h1>本日運勢 🔮</h1>
       <Marquee>
         <Track luckycolor={user.color}>
-          <div className="content">{marqueeSentence.repeat(10)}</div>
+          <div className="content">{marqueeSentence}</div>
         </Track>
       </Marquee>
       {/* <h1>推薦商品 👍🏻</h1> */}
@@ -290,12 +290,7 @@ export default function LuckyColorLanding() {
           }}
         >
           {moreProducts &&
-            moreProducts.map((img) => <CarouselCard url={img} key={img} />)}
-          <CarouselCard />
-          <CarouselCard />
-          <CarouselCard />
-          <CarouselCard />
-          <CarouselCard />
+            moreProducts.map((img, i) => <CarouselCard url={img} key={i} />)}
         </div>
       </Carousel>
       <ButtonsWrapper>
