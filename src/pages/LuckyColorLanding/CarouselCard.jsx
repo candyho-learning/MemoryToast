@@ -1,4 +1,4 @@
-export default function CarouselCard({ url }) {
+export default function CarouselCard({ url, productTitle, productId }) {
   return (
     <div className="card">
       <img
@@ -8,8 +8,10 @@ export default function CarouselCard({ url }) {
         }
       />
       <div className="card-text-content">
-        <h3>Fancy Product Title</h3>
-        <button>Buy Now</button>
+        <h3>{productTitle || "Fancy Product Title"}</h3>
+        <button>
+          <a href={`/products/${productId}`}>Buy Now</a>
+        </button>
       </div>
     </div>
   );

@@ -22,7 +22,7 @@ const LandingPageWrapper = styled.div`
 
   .birthday-month-only {
     text-align: center;
-    width: 90%;
+    width: 100%;
   }
 
   .recommended-products-section {
@@ -186,10 +186,10 @@ const Carousel = styled.div`
         border-top-left-radius: 20px;
       }
       .card-text-content {
-        padding: 20px 10px;
+        padding: 20px 15px;
 
         h3 {
-          margin: 15px 0;
+          margin: 5px 0;
           font-weight: 600;
           font-size: 24px;
         }
@@ -200,6 +200,12 @@ const Carousel = styled.div`
           border-radius: 10px;
           background-color: black;
           color: white;
+          margin-top: 15px;
+
+          a {
+            color: white;
+            text-decoration: none;
+          }
         }
       }
     }
@@ -227,16 +233,15 @@ export default function LuckyColorLanding() {
   const [mainImage, setMainImage] = useState(
     "https://images.unsplash.com/photo-1576740488939-3503ae080975?crop=entropy&cs=srgb&fm=jpg&ixid=M3wzMjM4NDZ8MHwxfHJhbmRvbXx8fHx8fHx8fDE3MTE4NzgxMTZ8&ixlib=rb-4.0.3&q=85"
   );
+  const [mainProductId, setMainProductId] = useState();
   const [moreProducts, setMoreProducts] = useState();
   const [activeIndex, setActiveIndex] = useState(2);
   const [gameStatus, setGameStatus] = useState("uninitiated");
   const birthdayMonth = user.birthday.split("-")[1];
   const today = new Date();
   const nowMonth = (today.getMonth() + 1).toString().padStart(2, "0");
-  console.log(`This user's bday month is ${birthdayMonth}`);
-  console.log(nowMonth);
+
   const isBirthdayMonth = birthdayMonth === nowMonth;
-  console.log(isBirthdayMonth);
 
   const handleScroll = (direction) => {
     setActiveIndex((prevIndex) =>
@@ -245,7 +250,6 @@ export default function LuckyColorLanding() {
         : Math.min(prevIndex + 1, 4)
     );
   };
-  console.log(activeIndex);
 
   useEffect(() => {
     console.log(user.color.slice(1));
@@ -261,12 +265,30 @@ export default function LuckyColorLanding() {
       const { data } = await response.json();
       console.log(data);
       const mainImage = data.main_image;
-      const moreProducts = data.images;
+      const mainProductId = data.id;
       mainImage && setMainImage(mainImage);
-      moreProducts && setMoreProducts(moreProducts);
+      mainProductId && setMainProductId(mainProductId);
     };
+
     getRecommendedProducts();
   }, [user]);
+
+  useEffect(() => {
+    const getOtherProducts = async () => {
+      const response = await fetch(
+        `https://traviss.beauty/api/1.0/recommendation_by_product?product_id=${mainProductId}`
+      );
+
+      if (!response.ok) {
+        console.log("cannot fetch other products");
+      }
+
+      const { data } = await response.json();
+      console.log(data);
+      setMoreProducts(data);
+    };
+    getOtherProducts();
+  }, [mainProductId]);
   if (loading)
     return (
       <LandingPageWrapper>
@@ -293,7 +315,9 @@ export default function LuckyColorLanding() {
       <div className="recommended-products-section">
         <div className="products">
           <GalleryContainer>
-            <img src={mainImage} />
+            <a href={`/products/${mainProductId}`}>
+              <img src={mainImage} />
+            </a>
           </GalleryContainer>
         </div>
         <div className="texts">
@@ -307,11 +331,17 @@ export default function LuckyColorLanding() {
           className="carousel-track"
           style={{
             transform: `translateX(${(activeIndex - 2) * -500}px)`,
-            // transform: "translateX(-500px)",
           }}
         >
           {moreProducts &&
-            moreProducts.map((img, i) => <CarouselCard url={img} key={i} />)}
+            moreProducts.map((item, i) => (
+              <CarouselCard url={item.main_image} key={item.id} />
+            ))}
+          <CarouselCard />
+          <CarouselCard />
+          <CarouselCard />
+          <CarouselCard />
+          <CarouselCard />
         </div>
       </Carousel>
       <ButtonsWrapper>
