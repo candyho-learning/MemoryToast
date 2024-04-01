@@ -122,6 +122,9 @@ const IconWrapper = styled.div`
 
 const Loading = styled(ReactLoading)`
   margin-top: 50px;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
 `;
 
 function Profile() {
