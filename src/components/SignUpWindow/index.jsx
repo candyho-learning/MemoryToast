@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import {
   BackgroundMask,
@@ -9,6 +9,7 @@ import {
 } from "../LoginWindow";
 
 import ColorPicker from "../ColorPicker";
+import { AuthContext } from "../../context/authContext";
 
 const INITIAL_FORM_FIELDS = {
   name: "",
@@ -41,6 +42,7 @@ export default function SignUpWindow() {
   const [luckyColorCode, setLuckyColorCode] = useState("pink");
   const [luckyColorName, setLuckyColorName] = useState("");
   const [showColorPicker, setShowColorPicker] = useState(false);
+  const { login } = useContext(AuthContext);
 
   const FORM_FIELDS = [
     { name: "name", type: "text", placeholder: "Your Full Name" },
@@ -65,7 +67,7 @@ export default function SignUpWindow() {
       [e.target.name]: e.target.value,
     });
   }
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
     console.log(formState);
 
@@ -75,7 +77,31 @@ export default function SignUpWindow() {
       password: formState.password,
       color: formState.colorCode,
       birthday: formState.birthday,
+      gender: formState.gender,
     };
+    try {
+      const response = await fetch("https://chouyu.site/api/1.0/user/signup", {
+        body: JSON.stringify(signUpData),
+        headers: new Headers({
+          "Content-Type": "application/json",
+        }),
+        method: "POST",
+      });
+      if (!response.ok) {
+        throw new error("sign up failed");
+      }
+      console.log(response);
+      const data = await response.json();
+      console.log(data);
+      login({
+        provider: "native",
+        email: formState.email,
+        password: formState.password,
+        access_token: "",
+      });
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   useEffect(() => {

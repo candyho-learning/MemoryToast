@@ -140,6 +140,7 @@ const Carousel = styled.div`
     justify-content: center;
     height: 100%;
     padding: 30px 0;
+    transition: all 1s ease-in-out;
 
     .card {
       width: 400px;
@@ -209,11 +210,13 @@ export default function LuckyColorLanding() {
   );
   const [moreProducts, setMoreProducts] = useState();
 
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [activeIndex, setActiveIndex] = useState(2);
   const cardWidth = 400; // Match this with your actual card width + margin/gap
   const handleScroll = (direction) => {
     setActiveIndex((prevIndex) =>
-      direction === "left" ? prevIndex - 1 : prevIndex + 1
+      direction === "left"
+        ? Math.max(prevIndex - 1, 0)
+        : Math.min(prevIndex + 1, 4)
     );
   };
   console.log(activeIndex);
@@ -271,7 +274,8 @@ export default function LuckyColorLanding() {
         <div
           className="carousel-track"
           style={{
-            transform: `translateX(${(activeIndex + 2) * cardWidth + 50}px)`,
+            transform: `translateX(${(activeIndex - 2) * -500}px)`,
+            // transform: "translateX(-500px)",
           }}
         >
           {moreProducts &&
