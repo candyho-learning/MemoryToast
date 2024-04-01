@@ -317,70 +317,72 @@ function Checkout() {
 
   const freight = 30;
 
-  async function checkout() {
-    try {
-      setLoading(true);
+  // async function checkout() {
+  //   try {
+  //     setLoading(true);
 
-      const token = isLogin ? jwtToken : await login();
+  //     const token = isLogin ? jwtToken : await login();
 
-      if (!token) {
-        window.alert("請登入會員");
-        return;
-      }
+  //     if (!token) {
+  //       window.alert("請登入會員");
+  //       return;
+  //     }
 
-      if (cartItems.length === 0) {
-        window.alert("尚未選購商品");
-        return;
-      }
+  //     if (cartItems.length === 0) {
+  //       window.alert("尚未選購商品");
+  //       return;
+  //     }
 
-      if (Object.values(recipient).some((value) => !value)) {
-        window.alert("請填寫完整訂購資料");
-        setInvalidFields(
-          Object.keys(recipient).filter((key) => !recipient[key])
-        );
-        formRef.current.scrollIntoView({
-          behavior: "smooth",
-          block: "center",
-        });
-        return;
-      }
+  //     if (Object.values(recipient).some((value) => !value)) {
+  //       window.alert("請填寫完整訂購資料");
+  //       setInvalidFields(
+  //         Object.keys(recipient).filter((key) => !recipient[key])
+  //       );
+  //       formRef.current.scrollIntoView({
+  //         behavior: "smooth",
+  //         block: "center",
+  //       });
+  //       return;
+  //     }
 
-      if (!tappay.canGetPrime()) {
-        window.alert("付款資料輸入有誤");
-        return;
-      }
+  //     if (!tappay.canGetPrime()) {
+  //       window.alert("付款資料輸入有誤");
+  //       return;
+  //     }
 
-      const result = await tappay.getPrime();
-      if (result.status !== 0) {
-        window.alert("付款資料輸入有誤");
-        return;
-      }
+  //     const result = await tappay.getPrime();
+  //     if (result.status !== 0) {
+  //       window.alert("付款資料輸入有誤");
+  //       return;
+  //     }
 
-      const { data } = await api.checkout(
-        {
-          prime: result.card.prime,
-          order: {
-            shipping: "delivery",
-            payment: "credit_card",
-            subtotal,
-            freight,
-            total: subtotal + freight,
-            recipient,
-            list: cartItems,
-          },
-        },
-        token
-      );
-      window.alert("付款成功");
-      setCartItems([]);
-      navigate("/thankyou", { state: { orderNumber: data.number } });
-    } catch (err) {
-      console.log(err);
-    } finally {
-      setLoading(false);
+  //     const { data } = await api.checkout(
+  //       {
+  //         prime: result.card.prime,
+  //         order: {
+  //           shipping: "delivery",
+  //           payment: "credit_card",
+  //           subtotal,
+  //           freight,
+  //           total: subtotal + freight,
+  //           recipient,
+  //           list: cartItems,
+  //         },
+  //       },
+  //       token
+  //     );
+  //     window.alert("付款成功");
+  //     setCartItems([]);
+  //     navigate("/thankyou", { state: { orderNumber: data.number } });
+  //   } catch (err) {
+  //     console.log(err);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // }
+    const checkout = () =>{
+      navigate('/thankyou', { state: { data: subtotal + freight - (isUseCoupon ? Math.floor(subtotal * 0.5) : 0) } });
     }
-  }
-
   return (
     <Wrapper>
       <Cart />
