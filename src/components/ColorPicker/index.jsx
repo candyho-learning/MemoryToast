@@ -11,7 +11,7 @@ const ColorPickerWrapper = styled.div`
 const WheelWrapper = styled.div`
   position: absolute;
   top:455px;
-  left:430px;
+  left:795px;
   display: flex;
   justify-content: flex-end;
 `;
