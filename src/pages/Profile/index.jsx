@@ -132,13 +132,16 @@ function Profile() {
     { service: '設定', path: 'Settings' },
     { service: '收藏', path: 'Starred' },
   ];
-  useEffect(() => {
+  const getUserColor = () => {
     const userData = JSON.parse(localStorage.getItem('userProfile'));
-    setBgColor(userData.color);
+    if (userData) setBgColor(userData.color);
+  };
+  useEffect(() => {
+    getUserColor();
   }, []);
   const renderContent = () => {
     if (loading) return <Loading type="spinningBubbles" color="#313538" />;
-    if (isLogin)
+    if (isLogin) {
       return (
         <div>
           <ProfileWrapper>
@@ -203,6 +206,8 @@ function Profile() {
           </ProfileWrapper>
         </div>
       );
+    }
+
     // return <LogoutButton onClick={login}>登入</LogoutButton>;
     return <LoginWindow />;
   };
