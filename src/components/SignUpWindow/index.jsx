@@ -37,12 +37,34 @@ const Select = styled.select`
   color: white;
 `;
 
+const SuccessMessage = styled.div`
+  font-size: 40px;
+  font-weight: 800;
+  text-align: center;
+  background: radial-gradient(
+    circle,
+    ${(props) => props.color || "#837568"} 10%,
+    #313538
+  );
+  height: 90vh;
+  padding: 150px 50px 50px 50px;
+  color: white;
+
+  h1 {
+    margin-bottom: 30px;
+  }
+  a {
+    color: white;
+    font-size: 24px;
+  }
+`;
+
 export default function SignUpWindow() {
   const [formState, setFormState] = useState(INITIAL_FORM_FIELDS);
   const [luckyColorCode, setLuckyColorCode] = useState("pink");
   const [luckyColorName, setLuckyColorName] = useState("");
   const [showColorPicker, setShowColorPicker] = useState(false);
-  const { login } = useContext(AuthContext);
+  const { login, isLogin, user } = useContext(AuthContext);
 
   const FORM_FIELDS = [
     { name: "name", type: "text", placeholder: "Your Full Name" },
@@ -110,7 +132,14 @@ export default function SignUpWindow() {
       colorCode: luckyColorName,
     });
   }, [luckyColorName]);
-  // TODO: Show and Hide color picker
+  if (isLogin) {
+    return (
+      <SuccessMessage color={luckyColorCode}>
+        <h1>{`Glad to Have You On Board!`}</h1>
+        <a href="/">Go to hompage</a>
+      </SuccessMessage>
+    );
+  }
   return (
     <DynamicBackgroundMask color={luckyColorCode}>
       <LoginBox>
