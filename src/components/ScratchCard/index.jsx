@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 const Container = styled.div`
   position: relative;
@@ -25,13 +25,42 @@ const ScratchOverlay = styled.div`
   height: 100%;
 `;
 
-const ScratchImage = styled.img`
+const ScratchImage = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 50px;
+  background-color: #6b5c5b;
   border-radius: 40px;
+  color: #fff;
   width: 100%;
   height: 100%;
+  margin-top: 1px;
+  p {
+    margin: 0;
+    padding: 0;
+  }
 `;
 const ScratchCard = () => {
+  const [coupon, setCoupon] = useState();
+  const [gameOver, setGameOver] = useState(false);
+
+  const randomCoupon = () => {
+    const randomValue = Math.random();
+    if (randomValue < 0.5) {
+      setCoupon({
+        text: '再接再厲! 可悲仔～～',
+        bingo: false,
+      });
+    } else {
+      setCoupon({
+        text: '恭喜中獎！ 全館商品5折',
+        bingo: true,
+      });
+    }
+  };
   useEffect(() => {
+    randomCoupon();
     const canvasElement = document.getElementById('scratch');
     const canvasContext = canvasElement.getContext('2d');
 
@@ -121,15 +150,51 @@ const ScratchCard = () => {
       }
       const transparentPercentage = (transparentPixelCount / (200 * 200)) * 100;
 
-      if (transparentPercentage >= 40) {
+      if (transparentPercentage >= 45) {
         canvasContext.clearRect(0, 0, 200, 200);
-        onComplete();
+        setGameOver(true);
       }
     };
 
     initializeCanvas();
   }, []);
 
+  useEffect(() => {
+    setTimeout(() => {
+      if (coupon) {
+        if (coupon.bingo) {
+          addCoupon()
+          alert('太神啦，準備購物囉!');
+        } else {
+          alert('再接再厲，下次一定!');
+        }
+      
+      }
+    }, 100);
+  }, [gameOver]);
+
+  const addCoupon = async () => {
+    const userProfileString = localStorage.getItem('userProfile');
+    const userProfile = JSON.parse(userProfileString);
+    const userId = userProfile.id;
+    console.log('使用者',userId)
+    try {
+      const response = await fetch(
+        `https://chouyu.site/api/1.0/coupon/update?num=1&userId=${userId}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      const data = await response.json();
+      console.log(data, '添加優惠券成功');
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
   return (
     <Container>
       <ScratchCanvas
@@ -145,7 +210,11 @@ const ScratchCard = () => {
         }}
       ></ScratchCanvas>
       <ScratchOverlay>
-        <ScratchImage src="../../../public/card.jpg" alt="Scratch Card" />
+        {coupon && (
+          <ScratchImage>
+            <p>{coupon.text}</p>
+          </ScratchImage>
+        )}
       </ScratchOverlay>
     </Container>
   );
