@@ -1,26 +1,30 @@
-import React, { useState, Fragment, useEffect, useRef } from "react";
-import Wheel from "@uiw/react-color-wheel";
-import { hsvaToHex } from "@uiw/color-convert";
-import styled from "styled-components";
+import React, { useState, Fragment, useEffect, useRef } from 'react';
+import Wheel from '@uiw/react-color-wheel';
+import { hsvaToHex } from '@uiw/color-convert';
+import styled from 'styled-components';
 const ColorPickerWrapper = styled.div`
   display: flex;
   flex-direction: column-reverse;
-
-  .wheel {
-    display: flex;
-    justify-content: flex-end;
-  }
+  width: 100%;
+  height: 100%;
 `;
-
+const WheelWrapper = styled.div`
+  position: absolute;
+  top:455px;
+  left:430px;
+  display: flex;
+  justify-content: flex-end;
+`;
 const PanetoneWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  width: 165px;
+  width: 100%;
+  height: 100%;
 `;
 const ColorDiv = styled.div`
   width: 100%;
   background-color: #fff;
-  height: 140px;
+  flex-grow:0.65;
 `;
 const WhiteDiv = styled.div`
   width: 100%;
@@ -28,23 +32,23 @@ const WhiteDiv = styled.div`
   flex-direction: column;
   justify-content: space-between;
   background-color: #fff;
-  height: 90px;
-  padding: 8px;
+  flex-grow:0.35;
+  padding: 18px;
   p:nth-of-type(1) {
     font-weight: bold;
-    font-size: 20px;
+    font-size: 40px;
   }
   p {
     display: block;
     width: 100%;
     margin: 0 !important;
     color: black;
-    font-size: 14px;
+    font-size: 24px;
   }
 `;
 function ColorPicker({ setColorName, colorName, setLuckyColorCode }) {
   const [hsva, setHsva] = useState({ h: 214, s: 43, v: 90, a: 1 });
-  const [hex, setHex] = useState("");
+  const [hex, setHex] = useState('');
   // const [colorName, setColorName] = useState("");
   const isLoading = useRef(false);
   const firstLoading = useRef(true);
@@ -86,33 +90,34 @@ function ColorPicker({ setColorName, colorName, setLuckyColorCode }) {
       const data = await response.json();
       return data;
     } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error('Error fetching data:', error);
       return null;
     }
   }
 
   return (
-    <ColorPickerWrapper>
-      <div className="wheel">
+    <>
+      <ColorPickerWrapper>
+        <PanetoneWrapper>
+          <ColorDiv
+            style={{
+              background: hsvaToHex(hsva),
+            }}
+          ></ColorDiv>
+          <WhiteDiv>
+            <p>Lucky Color</p>
+            <p>{hex}</p>
+            <p>{colorName}</p>
+          </WhiteDiv>
+        </PanetoneWrapper>
+      </ColorPickerWrapper>
+      <WheelWrapper className="wheel">
         <Wheel
           color={hsva}
           onChange={(color) => setHsva({ ...hsva, ...color.hsva })}
         />
-      </div>
-
-      <PanetoneWrapper>
-        <ColorDiv
-          style={{
-            background: hsvaToHex(hsva),
-          }}
-        ></ColorDiv>
-        <WhiteDiv>
-          <p>Lucky Color</p>
-          <p>{hex}</p>
-          <p>{colorName}</p>
-        </WhiteDiv>
-      </PanetoneWrapper>
-    </ColorPickerWrapper>
+      </WheelWrapper>
+    </>
   );
 }
 
