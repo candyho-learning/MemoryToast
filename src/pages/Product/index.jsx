@@ -186,9 +186,7 @@ const Images = styled.div`
 `;
 
 const Image = styled.img`
-  @media screen and (max-width: 1279px) {
-    width: 100%;
-  }
+  width: 100%;
 
   & + & {
     margin-top: 30px;
@@ -324,6 +322,7 @@ const TextWrapper = styled.div`
 
 const FeedbackCommentWrapper = styled.div`
   letter-spacing: 1px;
+  letter-spacing: 1px;
   width: 100%;
   padding: 20px 0;
   display: flex;
@@ -371,14 +370,19 @@ const FeedbackCommentWrapper = styled.div`
   .more {
     width: 100%;
     height: 50px;
+  .more {
+    width: 100%;
+    height: 50px;
     border-radius: 5px;
     background-color: #ddd;
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 15px;
+    gap: 15px;
     letter-spacing: 1px;
     cursor: pointer;
+    img {
     img {
       width: 20px;
       height: 20px;
@@ -387,7 +391,6 @@ const FeedbackCommentWrapper = styled.div`
   }
 `;
 const HasComment = styled.div`
-  
   font-size: 20px;
   margin: 20px auto 10px auto;
 `;
@@ -460,7 +463,6 @@ function Product() {
     checkPurchased(data);
   };
   useEffect(() => {
-    
     getcommentData();
   }, []);
   useEffect(() => {
@@ -503,227 +505,224 @@ function Product() {
   };
 
   const sendReview = async () => {
-    if (!isLogin) {
-      setCheckLogin(true);
-    }
-    if (star.number === 0) {
-      setErrMsg('記得先給評分哦!');
-      return;
-    }
-    if (!comment) {
-      setErrMsg('記得留言再送出評論哦!');
-      return;
-    }
-    const userProfile = JSON.parse(localStorage.getItem('userProfile'));
-    const userId = userProfile.id;
-    console.log(typeof userId);
-    try {
-      console.log({
-        userId: userId,
-        productId: parseInt(id),
-        rate: star.clickedNumber,
-        comment: comment,
-      });
-      const response = await fetch(
-        `https://chouyu.site/api/1.0/comment/create`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            userId: userId,
-            productId: id,
-            rate: star.clickedNumber,
-            comment: comment,
-          }),
-        }
-      );
-      setStar({ number: 0, clicked: false, clickedNumber: 0 });
-      setComment('');
-      //const data = await response.json();
-      setIsPurchased(true);
-      getcommentData()
-      alert('發表評論成功');
-      return data;
-    } catch (error) {
-      console.error('Error fetching data:', error);
-      throw error;
-    }
-  };
-  const handleMoreClick = () => {
-    setCommentIndex((prevState) => prevState + 3);
-  };
-  const submitComment = (e) => {
-    if (errMsg === '記得留言再送出評論哦') {
-      setErrMsg('');
-    }
-    setComment(e.target.value);
-  };
+    const sendReview = async () => {
+      if (!isLogin) {
+        setCheckLogin(true);
+      }
+      if (star.number === 0) {
+        setErrMsg('記得先給評分哦!');
+        return;
+      }
+      if (!comment) {
+        setErrMsg('記得留言再送出評論哦!');
+        return;
+      }
+      const userProfile = JSON.parse(localStorage.getItem('userProfile'));
+      const userId = userProfile.id;
+      console.log(typeof userId);
+      try {
+        const response = await fetch(
+          `https://chouyu.site/api/1.0/comment/create`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              userId: userId,
+              userId: userId,
+              productId: id,
+              rate: star.clickedNumber,
+              comment: comment,
+            }),
+          }
+        );
+        setStar({ number: 0, clicked: false, clickedNumber: 0 });
+        setComment('');
+        //const data = await response.json();
+        setIsPurchased(true);
+        getcommentData();
+        alert('發表評論成功');
+        return data;
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        throw error;
+      }
+    };
+    const handleMoreClick = () => {
+      setCommentIndex((prevState) => prevState + 3);
+    };
+    const submitComment = (e) => {
+      if (errMsg === '記得留言再送出評論哦') {
+        setErrMsg('');
+      }
+      setComment(e.target.value);
+    };
 
-  if (!product) return null;
+    if (!product) return null;
 
-  return (
-    <>
-      {!checkLogin && (
-        <Wrapper>
-          <MainImage src={product.main_image} />
-          <Details>
-            <Title>{product.title}</Title>
-            <ID>{product.id}</ID>
-            <ReviewWrapper>
-              <p className="score">{feedbackReview.avgStar}</p>
-              <AvgStarGroup>
-                {[...Array(5)].map((_, index) => {
-                  const { avgStar } = feedbackReview;
-                  const starPercent =
-                    avgStar > index && avgStar < index + 1
-                      ? (avgStar - index) * 100
-                      : avgStar < index
-                      ? 0
-                      : 100;
+    return (
+      <>
+        {!checkLogin && (
+          <Wrapper>
+            <MainImage src={product.main_image} />
+            <Details>
+              <Title>{product.title}</Title>
+              <ID>{product.id}</ID>
+              <ReviewWrapper>
+                <p className="score">{feedbackReview.avgStar}</p>
+                <AvgStarGroup>
+                  {[...Array(5)].map((_, index) => {
+                    const { avgStar } = feedbackReview;
+                    const starPercent =
+                      avgStar > index && avgStar < index + 1
+                        ? (avgStar - index) * 100
+                        : avgStar < index
+                        ? 0
+                        : 100;
+                    return (
+                      <div key={index}>
+                        <img
+                          className="star"
+                          src="/icons/star.png"
+                          alt=""
+                          style={{
+                            clipPath: `polygon(0 0, ${starPercent}% 0, ${starPercent}% 100%, 0 100%)`,
+                          }}
+                        />
+                        <img
+                          className="empty-star"
+                          src="/icons/empty_star2.png"
+                          alt=""
+                          style={{ marginLeft: `${index * 30}px` }}
+                        />
+                      </div>
+                    );
+                  })}
+                  <p className="reviews">
+                    Reviews({feedbackReview.totalComments})
+                  </p>
+                </AvgStarGroup>
+              </ReviewWrapper>
+
+              <Price>TWD.{product.price}</Price>
+              <ProductVariants product={product} />
+              <Note>{product.note}</Note>
+              <Texture>{product.texture}</Texture>
+              <Description>{product.description}</Description>
+              <Place>素材產地 / {product.place}</Place>
+              <Place>加工產地 / {product.place}</Place>
+            </Details>
+            <Story>
+              <StoryTitle>細部說明</StoryTitle>
+              <StoryContent>{product.story}</StoryContent>
+            </Story>
+            <Images>
+              {product.images.map((image, index) => (
+                <Image src={image} key={index} />
+              ))}
+            </Images>
+            <hr />
+            {!isPurchased && (
+              <CommentWrapper>
+                <div className="title">
+                  <div className="titleLeft">
+                    <p>評論</p>
+                    <AvgStarGroup onMouseLeave={starReset}>
+                      {[...Array(5)].map((_, index) => {
+                        return (
+                          <div>
+                            <div
+                              key={index}
+                              className="commentStar"
+                              style={{ opacity: index < star.number ? '1' : 0 }}
+                              onMouseEnter={() => {
+                                hoverStar(index);
+                              }}
+                              onMouseLeave={leaveStar}
+                              onClick={() => {
+                                setStar({
+                                  number: index + 1,
+                                  clicked: true,
+                                  clickedNumber: index + 1,
+                                });
+                                if (errMsg === '記得先給評分哦!') {
+                                  setErrMsg('');
+                                }
+                              }}
+                            ></div>
+                            <div
+                              key={index + 6}
+                              className="commentEmptyStar"
+                            ></div>
+                          </div>
+                        );
+                      })}
+                    </AvgStarGroup>
+                    <p className="errMsg">{errMsg}</p>
+                  </div>
+
+                  <button className="commentButton" onClick={sendReview}>
+                    {isLogin ? '發表評論' : '請先登入'}
+                  </button>
+                </div>
+                <TextWrapper>
+                  <textarea
+                    name=""
+                    id=""
+                    cols="30"
+                    rows="10"
+                    placeholder="請寫下大大寶貴的意見"
+                    onChange={submitComment}
+                    value={comment}
+                  ></textarea>
+                </TextWrapper>
+              </CommentWrapper>
+            )}
+            {isPurchased && <HasComment>已經對此商品留過評論囉!</HasComment>}
+            <FeedbackCommentWrapper>
+              {
+                <p className="title">{`最新評論(${feedbackReview.totalComments})`}</p>
+              }
+              {feedbackComment &&
+                feedbackComment.map((comment, index) => {
+                  if (index + 1 > commentIndex) return;
                   return (
-                    <div key={index}>
-                      <img
-                        className="star"
-                        src="/icons/star.png"
-                        alt=""
-                        style={{
-                          clipPath: `polygon(0 0, ${starPercent}% 0, ${starPercent}% 100%, 0 100%)`,
-                        }}
-                      />
-                      <img
-                        className="empty-star"
-                        src="/icons/empty_star2.png"
-                        alt=""
-                        style={{ marginLeft: `${index * 30}px` }}
-                      />
+                    <div className="reviewGroup">
+                      <div className="top">
+                        <p className="user">{comment.name}</p>
+                        <p className="star">{comment.rate}.0</p>
+                        <div className="starGroup">
+                          {[...Array(5)].map((star, index) => (
+                            <img
+                              src={
+                                comment.rate >= index + 1
+                                  ? '/icons/star.png'
+                                  : '/icons/empty_star2.png'
+                              }
+                              alt=""
+                            />
+                          ))}
+                        </div>
+                      </div>
+                      <div className="bottom">
+                        <p>{comment.comment}</p>
+                      </div>
                     </div>
                   );
                 })}
-                <p className="reviews">
-                  Reviews({feedbackReview.totalComments})
-                </p>
-              </AvgStarGroup>
-            </ReviewWrapper>
-
-            <Price>TWD.{product.price}</Price>
-            <ProductVariants product={product} />
-            <Note>{product.note}</Note>
-            <Texture>{product.texture}</Texture>
-            <Description>{product.description}</Description>
-            <Place>素材產地 / {product.place}</Place>
-            <Place>加工產地 / {product.place}</Place>
-          </Details>
-          <Story>
-            <StoryTitle>細部說明</StoryTitle>
-            <StoryContent>{product.story}</StoryContent>
-          </Story>
-          <Images>
-            {product.images.map((image, index) => (
-              <Image src={image} key={index} />
-            ))}
-          </Images>
-          <hr />
-          {!isPurchased && (
-            <CommentWrapper>
-              <div className="title">
-                <div className="titleLeft">
-                  <p>評論</p>
-                  <AvgStarGroup onMouseLeave={starReset}>
-                    {[...Array(5)].map((_, index) => {
-                      return (
-                        <div>
-                          <div
-                            key={index}
-                            className="commentStar"
-                            style={{ opacity: index < star.number ? '1' : 0 }}
-                            onMouseEnter={() => {
-                              hoverStar(index);
-                            }}
-                            onMouseLeave={leaveStar}
-                            onClick={() => {
-                              setStar({
-                                number: index + 1,
-                                clicked: true,
-                                clickedNumber: index + 1,
-                              });
-                              if (errMsg === '記得先給評分哦!') {
-                                setErrMsg('');
-                              }
-                            }}
-                          ></div>
-                          <div
-                            key={index + 6}
-                            className="commentEmptyStar"
-                          ></div>
-                        </div>
-                      );
-                    })}
-                  </AvgStarGroup>
-                  <p className="errMsg">{errMsg}</p>
-                </div>
-
-                <button className="commentButton" onClick={sendReview}>
-                  {isLogin ? '發表評論' : '請先登入'}
-                </button>
+              {/* <button onClick={showMoreComment}>查看更多</button> */}
+              <div className="more" onClick={handleMoreClick}>
+                Show more
               </div>
-              <TextWrapper>
-                <textarea
-                  name=""
-                  id=""
-                  cols="30"
-                  rows="10"
-                  placeholder="請寫下大大寶貴的意見"
-                  onChange={submitComment}
-                  value={comment}
-                ></textarea>
-              </TextWrapper>
-            </CommentWrapper>
-          )}
-          {isPurchased && <HasComment>已經對此商品留過評論囉!</HasComment>}
-          <FeedbackCommentWrapper>
-            {
-              <p className="title">{`最新評論(${feedbackReview.totalComments})`}</p>
-            }
-            {feedbackComment &&
-              feedbackComment.map((comment, index) => {
-                if (index + 1 > commentIndex) return;
-                return (
-                  <div className="reviewGroup">
-                    <div className="top">
-                      <p className="user">{comment.name}</p>
-                      <p className="star">{comment.rate}.0</p>
-                      <div className="starGroup">
-                        {[...Array(5)].map((star, index) => (
-                          <img
-                            src={
-                              comment.rate >= index + 1
-                                ? '/icons/star.png'
-                                : '/icons/empty_star2.png'
-                            }
-                            alt=""
-                          />
-                        ))}
-                      </div>
-                    </div>
-                    <div className="bottom">
-                      <p>{comment.comment}</p>
-                    </div>
-                  </div>
-                );
-              })}
-            {/* <button onClick={showMoreComment}>查看更多</button> */}
-            <div className="more" onClick={handleMoreClick}>
-              Show more
-            </div>
-          </FeedbackCommentWrapper>
-        </Wrapper>
-      )}
+            </FeedbackCommentWrapper>
+          </Wrapper>
+        )}
 
-      {checkLogin && <LoginWindow setCheckLogin={setCheckLogin} />}
-    </>
-  );
+        {checkLogin && <LoginWindow setCheckLogin={setCheckLogin} />}
+      </>
+    );
+  };
 }
 
 export default Product;

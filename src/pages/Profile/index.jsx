@@ -1,9 +1,10 @@
-import { useContext, useEffect, useState } from 'react';
-import ReactLoading from 'react-loading';
-import styled from 'styled-components';
-import { AuthContext } from '../../context/authContext';
-import LoginWindow from '../../components/LoginWindow';
-import './index.css';
+import { useContext, useEffect, useState } from "react";
+import ReactLoading from "react-loading";
+import styled from "styled-components";
+import { AuthContext } from "../../context/authContext";
+import LoginWindow from "../../components/LoginWindow";
+import "./index.css";
+import { render } from "react-dom";
 
 const Wrapper = styled.div`
   padding: 60px 20px;
@@ -30,6 +31,17 @@ const MemberWrapper = styled.div`
   align-items: center;
   display: flex;
   flex-direction: column;
+
+  button.logout {
+    background-color: blue;
+    background: none;
+    border: none;
+    text-decoration: underline;
+    font-size: 18px;
+    &:hover {
+      cursor: pointer;
+    }
+  }
 `;
 
 const MemberPicWrapper = styled.div`
@@ -113,39 +125,35 @@ const IconWrapper = styled.div`
 
 const Loading = styled(ReactLoading)`
   margin-top: 50px;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
 `;
 
 function Profile() {
   const { user, isLogin, login, logout, loading } = useContext(AuthContext);
-  const [bgColor, setBgColor] = useState();
   const servicesArr = [
-    { service: '地址', path: 'Address' },
-    { service: '待付款', path: 'AwaitingPayment' },
-    { service: '待評價', path: 'AwaitingReview' },
-    { service: '待出貨', path: 'AwaitingShipment' },
-    { service: '待簽收', path: 'Shipped' },
-    { service: '客服訊息', path: 'CustomerService' },
-    { service: '退換貨', path: 'Exchange' },
-    { service: '貨到通知', path: 'Notification' },
-    { service: '帳戶退款', path: 'Refunded' },
-    { service: '手機綁定', path: 'RegisterCellphone' },
-    { service: '設定', path: 'Settings' },
-    { service: '收藏', path: 'Starred' },
+    { service: "地址", path: "Address" },
+    { service: "待付款", path: "AwaitingPayment" },
+    { service: "待評價", path: "AwaitingReview" },
+    { service: "待出貨", path: "AwaitingShipment" },
+    { service: "待簽收", path: "Shipped" },
+    { service: "客服訊息", path: "CustomerService" },
+    { service: "退換貨", path: "Exchange" },
+    { service: "貨到通知", path: "Notification" },
+    { service: "帳戶退款", path: "Refunded" },
+    { service: "手機綁定", path: "RegisterCellphone" },
+    { service: "設定", path: "Settings" },
+    { service: "收藏", path: "Starred" },
   ];
-  const getUserColor = () => {
-    const userData = JSON.parse(localStorage.getItem('userProfile'));
-    if (userData) setBgColor(userData.color);
-  };
-  useEffect(() => {
-    getUserColor();
-  }, []);
+
   const renderContent = () => {
     if (loading) return <Loading type="spinningBubbles" color="#313538" />;
-    if (isLogin) {
+    if (isLogin && user) {
       return (
         <>
           <ProfileWrapper>
-            <MemberWrapper style={{ backgroundColor: `${bgColor}` }}>
+            <MemberWrapper style={{ backgroundColor: `${user.color}` }}>
               <MemberPicWrapper>
                 <MemberPic>
                   <Circle1 className="circle-1"></Circle1>
@@ -157,11 +165,11 @@ function Profile() {
                 </MemberPic>
               </MemberPicWrapper>
               <div className="memberInfoWrapper">
-                <p>Name: </p>
-                <p>Email: </p>
-                <p>Lucky color: </p>
+                <p>{`Name: ${user.name}`}</p>
+                <p>{`Lucky color: ${user.color}`}</p>
+                <p>{`Coupons: ${user.coupon}`}</p>
                 <button class="blobby-button">
-                  Change lucky color{' '}
+                  Change lucky color{" "}
                   <span class="inner">
                     <span class="blobs">
                       <span class="blob"></span>
@@ -193,21 +201,19 @@ function Profile() {
                     </defs>
                   </svg>
                 </button>
-
               </div>
-              <button onClick={logout}>
+              <button className="logout" onClick={logout}>
                 登出
               </button>
             </MemberWrapper>
             <FuncWrapper>
               {servicesArr.map((service) => (
-                <IconWrapper>
+                <IconWrapper key={service.service}>
                   <img src={`/icons/Icons_24px_${service.path}3x.png`} alt="" />
                   <p>{service.service}</p>
                 </IconWrapper>
               ))}
             </FuncWrapper>
-
           </ProfileWrapper>
         </>
       );
@@ -216,7 +222,7 @@ function Profile() {
     // return <LogoutButton onClick={login}>登入</LogoutButton>;
     return <LoginWindow />;
   };
-  return <>{renderContent()}</>;
+  return <Wrapper>{renderContent()}</Wrapper>;
 }
 
 export default Profile;
