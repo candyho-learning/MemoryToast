@@ -296,7 +296,7 @@ function Checkout() {
   const formRef = useRef();
 
   const { jwtToken, isLogin, login, user } = useContext(AuthContext);
-  const { cartItems, setCartItems,cartCount } = useContext(CartContext);
+  const { cartItems, setCartItems } = useContext(CartContext);
 
   useEffect(() => {
     const setupTappay = async () => {
