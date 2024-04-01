@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { AuthContext } from "../../context/authContext";
 import LoginWindow from "../../components/LoginWindow";
 import "./index.css";
-import { render } from "react-dom";
+import api from "../../utils/api";
 
 const Wrapper = styled.div`
   padding: 60px 20px;
@@ -146,6 +146,15 @@ function Profile() {
     { service: "設定", path: "Settings" },
     { service: "收藏", path: "Starred" },
   ];
+
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken");
+    (async () => {
+      console.log("getting user profile");
+      const data = await api.getProfile(token);
+      console.log(data);
+    })();
+  }, []);
 
   const renderContent = () => {
     if (loading) return <Loading type="spinningBubbles" color="#313538" />;

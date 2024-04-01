@@ -149,7 +149,7 @@ const Loading = styled(ReactLoading)`
 
 const Carousel = styled.div`
   width: 100%;
-  height: 430px;
+  height: 500px;
   overflow: hidden;
   background-color: #f1f1f1;
 
@@ -337,7 +337,12 @@ export default function LuckyColorLanding() {
         >
           {moreProducts &&
             moreProducts.map((item, i) => (
-              <CarouselCard url={item.main_image} key={item.id} />
+              <CarouselCard
+                url={item.main_image}
+                key={item.id}
+                productTitle={item.title}
+                productId={item.id}
+              />
             ))}
         </div>
       </Carousel>
