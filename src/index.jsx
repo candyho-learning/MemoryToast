@@ -9,7 +9,7 @@ import ThankYou from "./pages/ThankYou";
 import LoginWindow from "./components/LoginWindow";
 import SignUpWindow from "./components/SignUpWindow";
 import LuckyColorLanding from "./pages/LuckyColorLanding";
-
+import ScratchCard from "./components/ScratchCard";
 import ProtectedComponent from "./components/ProtectedComponent/ProtectedComponent";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
