@@ -13,11 +13,16 @@ const LandingPageWrapper = styled.div`
   align-items: center;
   max-width: 1500px;
   margin: 0 auto;
-  padding: 0 30px;
+  padding: 30px;
 
   h1 {
     font-size: 35px;
     margin: 60px 0;
+  }
+
+  .birthday-month-only {
+    text-align: center;
+    width: 90%;
   }
 
   .recommended-products-section {
@@ -105,6 +110,8 @@ const GameSection = styled.div`
   height: 400px;
   margin-bottom: 30px;
   position: relative;
+  display: flex;
+  justify-content: center;
 
   button {
     position: absolute;
@@ -221,8 +228,16 @@ export default function LuckyColorLanding() {
     "https://images.unsplash.com/photo-1576740488939-3503ae080975?crop=entropy&cs=srgb&fm=jpg&ixid=M3wzMjM4NDZ8MHwxfHJhbmRvbXx8fHx8fHx8fDE3MTE4NzgxMTZ8&ixlib=rb-4.0.3&q=85"
   );
   const [moreProducts, setMoreProducts] = useState();
-
   const [activeIndex, setActiveIndex] = useState(2);
+  const [gameStatus, setGameStatus] = useState("uninitiated");
+  const birthdayMonth = user.birthday.split("-")[1];
+  const today = new Date();
+  const nowMonth = (today.getMonth() + 1).toString().padStart(2, "0");
+  console.log(`This user's bday month is ${birthdayMonth}`);
+  console.log(nowMonth);
+  const isBirthdayMonth = birthdayMonth === nowMonth;
+  console.log(isBirthdayMonth);
+
   const handleScroll = (direction) => {
     setActiveIndex((prevIndex) =>
       direction === "left"
@@ -262,12 +277,18 @@ export default function LuckyColorLanding() {
   if (!isLogin) return <LoginWindow />;
   return (
     <LandingPageWrapper>
-      <h1>本日運勢 🔮</h1>
-      <Marquee>
-        <Track luckycolor={user.color}>
-          <div className="content">{marqueeSentence}</div>
-        </Track>
-      </Marquee>
+      <div
+        className="birthday-month-only"
+        style={{ display: isBirthdayMonth ? "block" : "none" }}
+      >
+        <h1>本日運勢 🔮</h1>
+        <Marquee>
+          <Track luckycolor={user.color}>
+            <div className="content">{marqueeSentence}</div>
+          </Track>
+        </Marquee>
+      </div>
+
       {/* <h1>推薦商品 👍🏻</h1> */}
       <div className="recommended-products-section">
         <div className="products">
@@ -297,12 +318,24 @@ export default function LuckyColorLanding() {
         <button onClick={() => handleScroll("left")}>⬅️</button>
         <button onClick={() => handleScroll("right")}>➡️</button>
       </ButtonsWrapper>
-
-      <h1>刮刮樂遊戲 🎲</h1>
-      <GameSection>
-        <ScratchCard />
-        <button>Start Game</button>
-      </GameSection>
+      <div
+        className="birthday-month-only"
+        style={{ display: isBirthdayMonth ? "block" : "none" }}
+      >
+        <h1>刮刮樂遊戲 🎲</h1>
+        <GameSection>
+          {gameStatus === "started" && <ScratchCard />}
+          {gameStatus === "uninitiated" && (
+            <button
+              onClick={() => {
+                setGameStatus("started");
+              }}
+            >
+              Start Game
+            </button>
+          )}
+        </GameSection>
+      </div>
     </LandingPageWrapper>
   );
 }
