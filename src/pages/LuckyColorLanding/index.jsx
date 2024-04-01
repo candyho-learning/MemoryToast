@@ -13,11 +13,16 @@ const LandingPageWrapper = styled.div`
   align-items: center;
   max-width: 1500px;
   margin: 0 auto;
-  padding: 0 30px;
+  padding: 30px 50px;
 
   h1 {
     font-size: 35px;
     margin: 60px 0;
+  }
+
+  .birthday-month-only {
+    text-align: center;
+    width: 100%;
   }
 
   .recommended-products-section {
@@ -51,7 +56,7 @@ const LandingPageWrapper = styled.div`
 
 const marqueeAnimation = keyframes`
   from {
-    transform: translateX(0%);
+    transform: translateX(30%);
   }
   to {
     transform: translateX(-100%);
@@ -80,7 +85,7 @@ const Track = styled.div`
   font-weight: 800;
   .content {
     font-size: 34px;
-    animation: ${marqueeAnimation} 100s linear infinite;
+    animation: ${marqueeAnimation} 30s linear infinite;
   }
 `;
 
@@ -105,6 +110,8 @@ const GameSection = styled.div`
   height: 400px;
   margin-bottom: 30px;
   position: relative;
+  display: flex;
+  justify-content: center;
 
   button {
     position: absolute;
@@ -179,10 +186,10 @@ const Carousel = styled.div`
         border-top-left-radius: 20px;
       }
       .card-text-content {
-        padding: 20px 10px;
+        padding: 20px 15px;
 
         h3 {
-          margin: 15px 0;
+          margin: 5px 0;
           font-weight: 600;
           font-size: 24px;
         }
@@ -193,6 +200,12 @@ const Carousel = styled.div`
           border-radius: 10px;
           background-color: black;
           color: white;
+          margin-top: 15px;
+
+          a {
+            color: white;
+            text-decoration: none;
+          }
         }
       }
     }
@@ -212,17 +225,24 @@ const ButtonsWrapper = styled.div`
     margin: 0 20px;
   }
 `;
-const marqueeSentence = "Infinite Marquee with long sentence";
+const marqueeSentence =
+  "今天，星星閃爍著神秘的光芒，預示著你將迎來許多機遇和挑戰。勇敢地面對這些挑戰，並抓住機遇，因為它們將帶給你成長和成功的機會。🎁";
 
 export default function LuckyColorLanding() {
   const { isLogin, user, loading } = useContext(AuthContext);
   const [mainImage, setMainImage] = useState(
     "https://images.unsplash.com/photo-1576740488939-3503ae080975?crop=entropy&cs=srgb&fm=jpg&ixid=M3wzMjM4NDZ8MHwxfHJhbmRvbXx8fHx8fHx8fDE3MTE4NzgxMTZ8&ixlib=rb-4.0.3&q=85"
   );
+  const [mainProductId, setMainProductId] = useState();
   const [moreProducts, setMoreProducts] = useState();
-
   const [activeIndex, setActiveIndex] = useState(2);
-  const cardWidth = 400; // Match this with your actual card width + margin/gap
+  const [gameStatus, setGameStatus] = useState("uninitiated");
+  const birthdayMonth = user.birthday.split("-")[1];
+  const today = new Date();
+  const nowMonth = (today.getMonth() + 1).toString().padStart(2, "0");
+
+  const isBirthdayMonth = birthdayMonth === nowMonth;
+
   const handleScroll = (direction) => {
     setActiveIndex((prevIndex) =>
       direction === "left"
@@ -230,7 +250,6 @@ export default function LuckyColorLanding() {
         : Math.min(prevIndex + 1, 4)
     );
   };
-  console.log(activeIndex);
 
   useEffect(() => {
     console.log(user.color.slice(1));
@@ -246,12 +265,32 @@ export default function LuckyColorLanding() {
       const { data } = await response.json();
       console.log(data);
       const mainImage = data.main_image;
-      const moreProducts = data.images;
+      const mainProductId = data.id;
+      console.log(`mainProduct id is ${mainProductId}`);
       mainImage && setMainImage(mainImage);
-      moreProducts && setMoreProducts(moreProducts);
+      mainProductId && setMainProductId(mainProductId);
     };
-    getRecommendedProducts();
+
+    user && getRecommendedProducts();
   }, [user]);
+
+  useEffect(() => {
+    const getOtherProducts = async () => {
+      const response = await fetch(
+        `https://traviss.beauty/api/1.0/recommendationproduct?product_id=${mainProductId}`
+      );
+
+      if (!response.ok) {
+        console.log("cannot fetch other products");
+      }
+
+      const { data } = await response.json();
+      console.log(data);
+      setMoreProducts(data);
+    };
+    mainProductId && getOtherProducts();
+  }, [mainProductId]);
+
   if (loading)
     return (
       <LandingPageWrapper>
@@ -262,17 +301,25 @@ export default function LuckyColorLanding() {
   if (!isLogin) return <LoginWindow />;
   return (
     <LandingPageWrapper>
-      <h1>本日運勢 🔮</h1>
-      <Marquee>
-        <Track luckycolor={user.color}>
-          <div className="content">{marqueeSentence.repeat(10)}</div>
-        </Track>
-      </Marquee>
+      <div
+        className="birthday-month-only"
+        style={{ display: isBirthdayMonth ? "block" : "none" }}
+      >
+        <h1>本日運勢 🔮</h1>
+        <Marquee>
+          <Track luckycolor={user.color}>
+            <div className="content">{marqueeSentence}</div>
+          </Track>
+        </Marquee>
+      </div>
+
       {/* <h1>推薦商品 👍🏻</h1> */}
       <div className="recommended-products-section">
         <div className="products">
           <GalleryContainer>
-            <img src={mainImage} />
+            <a href={`/products/${mainProductId}`}>
+              <img src={mainImage} />
+            </a>
           </GalleryContainer>
         </div>
         <div className="texts">
@@ -286,28 +333,36 @@ export default function LuckyColorLanding() {
           className="carousel-track"
           style={{
             transform: `translateX(${(activeIndex - 2) * -500}px)`,
-            // transform: "translateX(-500px)",
           }}
         >
           {moreProducts &&
-            moreProducts.map((img) => <CarouselCard url={img} />)}
-          <CarouselCard />
-          <CarouselCard />
-          <CarouselCard />
-          <CarouselCard />
-          <CarouselCard />
+            moreProducts.map((item, i) => (
+              <CarouselCard url={item.main_image} key={item.id} />
+            ))}
         </div>
       </Carousel>
       <ButtonsWrapper>
         <button onClick={() => handleScroll("left")}>⬅️</button>
         <button onClick={() => handleScroll("right")}>➡️</button>
       </ButtonsWrapper>
-
-      <h1>刮刮樂遊戲 🎲</h1>
-      <GameSection>
-        <ScratchCard />
-        <button>Start Game</button>
-      </GameSection>
+      <div
+        className="birthday-month-only"
+        style={{ display: isBirthdayMonth ? "block" : "none" }}
+      >
+        <h1>刮刮樂遊戲 🎲</h1>
+        <GameSection>
+          {gameStatus === "started" && <ScratchCard />}
+          {gameStatus === "uninitiated" && (
+            <button
+              onClick={() => {
+                setGameStatus("started");
+              }}
+            >
+              Start Game
+            </button>
+          )}
+        </GameSection>
+      </div>
     </LandingPageWrapper>
   );
 }

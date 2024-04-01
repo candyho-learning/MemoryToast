@@ -32,17 +32,48 @@ const Select = styled.select`
   margin: 10px 0;
   width: 100%;
   border: none;
-  background: linear-gradient(135deg, #9c8c7c 30%, #b59f8d);
+  background: #f1f1f1;
   padding: 3px 10px;
-  color: white;
+  color: black;
 `;
+
+const SuccessMessage = styled.div`
+  font-size: 40px;
+  font-weight: 800;
+  text-align: center;
+  background: radial-gradient(
+    circle,
+    ${(props) => props.color || "#837568"} 10%,
+    #313538
+  );
+  height: 90vh;
+  padding: 150px 50px 50px 50px;
+  color: white;
+
+  h1 {
+    margin-bottom: 30px;
+  }
+  a {
+    color: white;
+    font-size: 24px;
+  }
+`;
+
+const Link = styled.a`
+
+  margin-top: 10px;
+  font-size: 11px;
+  color: #313538;
+  &:hover {
+    cursor: pointer;
+  `;
 
 export default function SignUpWindow() {
   const [formState, setFormState] = useState(INITIAL_FORM_FIELDS);
-  const [luckyColorCode, setLuckyColorCode] = useState("pink");
+  const [luckyColorCode, setLuckyColorCode] = useState();
   const [luckyColorName, setLuckyColorName] = useState("");
   const [showColorPicker, setShowColorPicker] = useState(false);
-  const { login } = useContext(AuthContext);
+  const { login, isLogin, user } = useContext(AuthContext);
 
   const FORM_FIELDS = [
     { name: "name", type: "text", placeholder: "Your Full Name" },
@@ -107,34 +138,49 @@ export default function SignUpWindow() {
   useEffect(() => {
     setFormState({
       ...formState,
-      colorCode: luckyColorName,
+      colorCode: luckyColorCode,
     });
-  }, [luckyColorName]);
-  // TODO: Show and Hide color picker
+  }, [luckyColorCode]);
+  if (isLogin) {
+    return (
+      <SuccessMessage color={luckyColorCode}>
+        <h1>{`Glad to Have You On Board, ${user.name}!`}</h1>
+        <a href="/myluckycolor">Go To My Lucky Color Page</a>
+      </SuccessMessage>
+    );
+  }
   return (
     <DynamicBackgroundMask color={luckyColorCode}>
       <LoginBox>
         <div className="left">
-          <div className="text-content" style={{ display: "none" }}>
+          <div
+            className="text-content"
+            style={{ display: showColorPicker ? "none" : "block" }}
+          >
             <FormTitle>"Color is the language of fashion."</FormTitle>
             <p>
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Velit ea
               quidem libero nobis quo ullam?
             </p>
           </div>
-          <ColorPicker
-            setColorName={setLuckyColorName}
-            colorName={luckyColorName}
-            setLuckyColorCode={setLuckyColorCode}
-          />
-          <button
-            style={{ height: "30px", marginTop: "30px", marginLeft: "240px" }}
-            onClick={() => {
-              setShowColorPicker(false);
-            }}
+          <div
+            className="color-picker-area"
+            style={{ display: showColorPicker ? "block" : "none" }}
           >
-            Confirm Color!
-          </button>
+            <ColorPicker
+              setColorName={setLuckyColorName}
+              colorName={luckyColorName}
+              setLuckyColorCode={setLuckyColorCode}
+            />
+            <button
+              style={{ height: "30px", marginTop: "30px", marginLeft: "240px" }}
+              onClick={() => {
+                setShowColorPicker(false);
+              }}
+            >
+              Confirm Color!
+            </button>
+          </div>
         </div>
         <div className="right">
           {/* TODO: Add form action: login API with username and password */}
@@ -145,11 +191,20 @@ export default function SignUpWindow() {
                 type={item.type}
                 name={item.name}
                 placeholder={item.placeholder}
-                onChange={handleFormChange}
+                onChange={
+                  item.name === "colorCode" ? () => {} : handleFormChange
+                }
                 value={
                   item.name === "colorCode"
                     ? luckyColorCode
                     : formState[item.name]
+                }
+                onFocus={
+                  item.name === "colorCode"
+                    ? () => {
+                        setShowColorPicker(true);
+                      }
+                    : () => {}
                 }
                 key={item.name}
                 required
@@ -163,6 +218,7 @@ export default function SignUpWindow() {
             </Select>
             <Button>Sign Up</Button>
           </form>
+          <Link href="/signup">Already have an account? Log in here.</Link>
         </div>
 
         {/* Color picker */}

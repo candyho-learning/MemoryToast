@@ -24,7 +24,7 @@ export const LoginBox = styled.div`
   min-width: 300px;
   min-height: 500px;
   width: 70%;
-  height: 85%;
+  height: 80%;
   max-width: 800px;
   max-height: 800px;
   z-index: 5;
@@ -92,9 +92,9 @@ export const Input = styled.input`
   margin: 10px 0;
   width: 100%;
   border: none;
-  background: linear-gradient(135deg, #9c8c7c 30%, #b59f8d);
+  background: #f1f1f1;
   padding: 3px 10px;
-  color: white;
+  color: black;
 `;
 
 export const FormTitle = styled.h1`
@@ -144,29 +144,7 @@ export default function LoginWindow({ setCheckLogin }) {
     }
     console.log(`login status: ${isLogin}`);
   }
-  const loginFunc = async (formState) => {
-    const options = {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        provider: "native",
-        email: userEmail,
-        password: userPassword,
-        access_token: "",
-      }),
-    };
-    try {
-      const response = await fetch(
-        "http://50.16.87.98/api/1.0/user/signin",
-        options
-      );
-      const data = await response.json();
 
-      console.log(data);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
   return (
     <BackgroundMask>
       <LoginBox>
@@ -200,7 +178,7 @@ export default function LoginWindow({ setCheckLogin }) {
                 setUserPassword(e.target.value);
               }}
             />
-            <a href="#">Forgot Password?</a>
+            <a href="/signup">Don't have an account? Sign up here.</a>
             <Button>Log In</Button>
           </form>
         </div>
