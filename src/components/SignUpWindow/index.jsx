@@ -136,7 +136,7 @@ export default function SignUpWindow() {
     return (
       <SuccessMessage color={luckyColorCode}>
         <h1>{`Glad to Have You On Board, ${user.name}!`}</h1>
-        <a href="/">Go to hompage</a>
+        <a href="/myluckycolor">Go To My Lucky Color Page</a>
       </SuccessMessage>
     );
   }

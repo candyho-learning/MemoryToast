@@ -290,7 +290,7 @@ export default function LuckyColorLanding() {
           }}
         >
           {moreProducts &&
-            moreProducts.map((img) => <CarouselCard url={img} />)}
+            moreProducts.map((img) => <CarouselCard url={img} key={img} />)}
           <CarouselCard />
           <CarouselCard />
           <CarouselCard />
