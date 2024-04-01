@@ -205,6 +205,7 @@ const marqueeSentence = "Infinite Marquee with long sentence";
 
 export default function LuckyColorLanding() {
   const { isLogin, user, loading } = useContext(AuthContext);
+<<<<<<< HEAD
   const [mainImage, setMainImage] = useState(
     "https://images.unsplash.com/photo-1576740488939-3503ae080975?crop=entropy&cs=srgb&fm=jpg&ixid=M3wzMjM4NDZ8MHwxfHJhbmRvbXx8fHx8fHx8fDE3MTE4NzgxMTZ8&ixlib=rb-4.0.3&q=85"
   );
@@ -241,6 +242,9 @@ export default function LuckyColorLanding() {
     };
     getRecommendedProducts();
   }, [user]);
+=======
+  console.log(user,'color頁')
+>>>>>>> develop
   if (loading)
     return (
       <LandingPageWrapper>

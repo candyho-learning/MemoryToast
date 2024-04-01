@@ -69,40 +69,34 @@ export default function SignUpWindow() {
   }
   async function handleSubmit(e) {
     e.preventDefault();
-    console.log(formState);
+    // console.log(formState);
+    signUp(formState);
+  }
 
-    const signUpData = {
-      name: formState.name,
-      email: formState.email,
-      password: formState.password,
-      color: formState.colorCode,
-      birthday: formState.birthday,
-      gender: formState.gender,
-    };
-    try {
-      const response = await fetch("https://chouyu.site/api/1.0/user/signup", {
-        body: JSON.stringify(signUpData),
-        headers: new Headers({
-          "Content-Type": "application/json",
-        }),
-        method: "POST",
-      });
-      if (!response.ok) {
-        throw new error("sign up failed");
-      }
-      console.log(response);
-      const data = await response.json();
-      console.log(data);
-      login({
+  const signUp = async (formState) => {
+    const options = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
         provider: "native",
+        birthday: formState.birthday,
+        color: luckyColorCode,
         email: formState.email,
         password: formState.password,
-        access_token: "",
-      });
-    } catch (err) {
-      console.error(err);
+        name: formState.name,
+      }),
+    };
+    try {
+      const response = await fetch(
+        "http://50.16.87.98/api/1.0/user/signup",
+        options
+      );
+      const data = await response.json();
+      console.log(data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
     }
-  }
+  };
 
   useEffect(() => {
     setFormState({

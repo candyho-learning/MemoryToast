@@ -2,6 +2,7 @@ const api = {
   hostname: "https://chouyu.site/api/1.0",
   // hostname: "https://api.appworks-school.tw/api/1.0",
   async getProducts(category, paging) {
+    console.log(`${this.hostname}/products/${category}?paging=${paging}`)
     const response = await fetch(
       `${this.hostname}/products/${category}?paging=${paging}`
     );
