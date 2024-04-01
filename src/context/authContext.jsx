@@ -84,6 +84,7 @@ export const AuthContextProvider = ({ children }) => {
     if (data) {
       setLoading(false);
       setIsLogin(true);
+      setUser(data.user);
       localStorage.setItem("accessToken", JSON.stringify(data.access_token));
       localStorage.setItem("userProfile", JSON.stringify(data.user));
       return data;

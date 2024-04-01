@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { AuthContext } from "../../context/authContext";
 import LoginWindow from "../../components/LoginWindow";
 import "./index.css";
+import { render } from "react-dom";
 
 const Wrapper = styled.div`
   padding: 60px 20px;
@@ -30,6 +31,14 @@ const MemberWrapper = styled.div`
   align-items: center;
   display: flex;
   flex-direction: column;
+
+  button.logout {
+    background-color: blue;
+    background: none;
+    border: none;
+    text-decoration: underline;
+    font-size: 18px;
+  }
 `;
 
 const MemberPicWrapper = styled.div`
@@ -134,7 +143,7 @@ function Profile() {
 
   const renderContent = () => {
     if (loading) return <Loading type="spinningBubbles" color="#313538" />;
-    if (isLogin) {
+    if (isLogin && user) {
       return (
         <>
           <ProfileWrapper>
@@ -187,11 +196,13 @@ function Profile() {
                   </svg>
                 </button>
               </div>
-              <button onClick={logout}>登出</button>
+              <button className="logout" onClick={logout}>
+                登出
+              </button>
             </MemberWrapper>
             <FuncWrapper>
               {servicesArr.map((service) => (
-                <IconWrapper>
+                <IconWrapper key={service.service}>
                   <img src={`/icons/Icons_24px_${service.path}3x.png`} alt="" />
                   <p>{service.service}</p>
                 </IconWrapper>
@@ -205,7 +216,7 @@ function Profile() {
     // return <LogoutButton onClick={login}>登入</LogoutButton>;
     return <LoginWindow />;
   };
-  return <>{renderContent()}</>;
+  return <Wrapper>{renderContent()}</Wrapper>;
 }
 
 export default Profile;
