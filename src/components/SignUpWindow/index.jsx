@@ -115,26 +115,34 @@ export default function SignUpWindow() {
     <DynamicBackgroundMask color={luckyColorCode}>
       <LoginBox>
         <div className="left">
-          <div className="text-content" style={{ display: "none" }}>
+          <div
+            className="text-content"
+            style={{ display: showColorPicker ? "none" : "block" }}
+          >
             <FormTitle>"Color is the language of fashion."</FormTitle>
             <p>
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Velit ea
               quidem libero nobis quo ullam?
             </p>
           </div>
-          <ColorPicker
-            setColorName={setLuckyColorName}
-            colorName={luckyColorName}
-            setLuckyColorCode={setLuckyColorCode}
-          />
-          <button
-            style={{ height: "30px", marginTop: "30px", marginLeft: "240px" }}
-            onClick={() => {
-              setShowColorPicker(false);
-            }}
+          <div
+            className="color-picker-area"
+            style={{ display: showColorPicker ? "block" : "none" }}
           >
-            Confirm Color!
-          </button>
+            <ColorPicker
+              setColorName={setLuckyColorName}
+              colorName={luckyColorName}
+              setLuckyColorCode={setLuckyColorCode}
+            />
+            <button
+              style={{ height: "30px", marginTop: "30px", marginLeft: "240px" }}
+              onClick={() => {
+                setShowColorPicker(false);
+              }}
+            >
+              Confirm Color!
+            </button>
+          </div>
         </div>
         <div className="right">
           {/* TODO: Add form action: login API with username and password */}
@@ -150,6 +158,13 @@ export default function SignUpWindow() {
                   item.name === "colorCode"
                     ? luckyColorCode
                     : formState[item.name]
+                }
+                onFocus={
+                  item.name === "colorCode"
+                    ? () => {
+                        setShowColorPicker(true);
+                      }
+                    : () => {}
                 }
                 key={item.name}
                 required

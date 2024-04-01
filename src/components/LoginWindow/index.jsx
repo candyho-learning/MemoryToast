@@ -24,7 +24,7 @@ export const LoginBox = styled.div`
   min-width: 300px;
   min-height: 500px;
   width: 70%;
-  height: 85%;
+  height: 80%;
   max-width: 800px;
   max-height: 800px;
   z-index: 5;
