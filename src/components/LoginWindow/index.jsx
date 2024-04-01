@@ -144,29 +144,29 @@ export default function LoginWindow({ setCheckLogin }) {
     }
     console.log(`login status: ${isLogin}`);
   }
-  const loginFunc = async (formState) => {
-    const options = {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        provider: "native",
-        email: userEmail,
-        password: userPassword,
-        access_token: "",
-      }),
-    };
-    try {
-      const response = await fetch(
-        "http://50.16.87.98/api/1.0/user/signin",
-        options
-      );
-      const data = await response.json();
+  // const loginFunc = async (formState) => {
+  //   const options = {
+  //     method: "POST",
+  //     headers: { "Content-Type": "application/json" },
+  //     body: JSON.stringify({
+  //       provider: "native",
+  //       email: userEmail,
+  //       password: userPassword,
+  //       access_token: "",
+  //     }),
+  //   };
+  //   try {
+  //     const response = await fetch(
+  //       "http://50.16.87.98/api/1.0/user/signin",
+  //       options
+  //     );
+  //     const data = await response.json();
 
-      console.log(data);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
+  //     console.log(data);
+  //   } catch (error) {
+  //     console.error("Error fetching data:", error);
+  //   }
+  // };
   return (
     <BackgroundMask>
       <LoginBox>
