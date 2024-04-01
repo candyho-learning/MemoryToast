@@ -143,7 +143,7 @@ function Profile() {
     if (loading) return <Loading type="spinningBubbles" color="#313538" />;
     if (isLogin) {
       return (
-        <div>
+        <>
           <ProfileWrapper>
             <MemberWrapper style={{ backgroundColor: `${bgColor}` }}>
               <MemberPicWrapper>
@@ -193,7 +193,11 @@ function Profile() {
                     </defs>
                   </svg>
                 </button>
+
               </div>
+              <button onClick={logout}>
+                登出
+              </button>
             </MemberWrapper>
             <FuncWrapper>
               {servicesArr.map((service) => (
@@ -203,8 +207,9 @@ function Profile() {
                 </IconWrapper>
               ))}
             </FuncWrapper>
+
           </ProfileWrapper>
-        </div>
+        </>
       );
     }
 
