@@ -25,6 +25,14 @@ const LandingPageWrapper = styled.div`
     justify-content: center;
     align-items: center;
 
+    @media screen and (max-width: 1100px) {
+      flex-direction: column;
+
+      .products {
+        width: 50%;
+      }
+    }
+
     .products {
       width: 100%;
     }
@@ -80,6 +88,9 @@ const GalleryContainer = styled.div`
   background-color: grey;
   width: 550px;
   height: 680px;
+  @media screen and (max-width: 1100px) {
+    margin: 0 auto;
+  }
 
   img {
     height: 100%;
@@ -130,7 +141,7 @@ const Loading = styled(ReactLoading)`
 `;
 
 const Carousel = styled.div`
-  width: 1000px;
+  width: 100%;
   height: 430px;
   overflow: hidden;
   background-color: #f1f1f1;

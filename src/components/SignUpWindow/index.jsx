@@ -69,34 +69,40 @@ export default function SignUpWindow() {
   }
   async function handleSubmit(e) {
     e.preventDefault();
-    // console.log(formState);
-    signUp(formState);
-  }
+    console.log(formState);
 
-  const signUp = async (formState) => {
-    const options = {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        provider: "native",
-        birthday: formState.birthday,
-        color: luckyColorCode,
-        email: formState.email,
-        password: formState.password,
-        name: formState.name,
-      }),
+    const signUpData = {
+      name: formState.name,
+      email: formState.email,
+      password: formState.password,
+      color: formState.colorCode,
+      birthday: formState.birthday,
+      gender: formState.gender,
     };
     try {
-      const response = await fetch(
-        "http://50.16.87.98/api/1.0/user/signup",
-        options
-      );
+      const response = await fetch("https://chouyu.site/api/1.0/user/signup", {
+        body: JSON.stringify(signUpData),
+        headers: new Headers({
+          "Content-Type": "application/json",
+        }),
+        method: "POST",
+      });
+      if (!response.ok) {
+        throw new error("sign up failed");
+      }
+      console.log(response);
       const data = await response.json();
       console.log(data);
-    } catch (error) {
-      console.error("Error fetching data:", error);
+      login({
+        provider: "native",
+        email: formState.email,
+        password: formState.password,
+        access_token: "",
+      });
+    } catch (err) {
+      console.error(err);
     }
-  };
+  }
 
   useEffect(() => {
     setFormState({
@@ -119,10 +125,10 @@ export default function SignUpWindow() {
           <ColorPicker
             setColorName={setLuckyColorName}
             colorName={luckyColorName}
-            setColorCode={setLuckyColorCode}
+            setLuckyColorCode={setLuckyColorCode}
           />
           <button
-            style={{ height: "30px", marginTop: "30px" }}
+            style={{ height: "30px", marginTop: "30px", marginLeft: "240px" }}
             onClick={() => {
               setShowColorPicker(false);
             }}
@@ -142,7 +148,7 @@ export default function SignUpWindow() {
                 onChange={handleFormChange}
                 value={
                   item.name === "colorCode"
-                    ? luckyColorName
+                    ? luckyColorCode
                     : formState[item.name]
                 }
                 key={item.name}
