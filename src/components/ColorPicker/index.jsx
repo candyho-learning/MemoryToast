@@ -4,14 +4,14 @@ import { hsvaToHex } from '@uiw/color-convert';
 import styled from 'styled-components';
 const ColorPickerWrapper = styled.div`
   display: flex;
-  flex-direction: column-reverse;
+  flex-direction: column;
   width: 100%;
-  height: 100%;
+  height:510px;
 `;
 const WheelWrapper = styled.div`
   position: absolute;
-  top:455px;
-  left:795px;
+  bottom: 0;
+  right: 0;
   display: flex;
   justify-content: flex-end;
 `;
@@ -19,24 +19,25 @@ const PanetoneWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 100%;
+  height: 600px;
 `;
 const ColorDiv = styled.div`
   width: 100%;
   background-color: #fff;
-  flex-grow:0.65;
+  flex-grow: 0.65;
 `;
 const WhiteDiv = styled.div`
+  position: relative;
   width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   background-color: #fff;
-  flex-grow:0.35;
+  flex-grow: 0.35;
   padding: 18px;
   p:nth-of-type(1) {
     font-weight: bold;
-    font-size: 40px;
+    font-size: 35px;
   }
   p {
     display: block;
@@ -108,15 +109,15 @@ function ColorPicker({ setColorName, colorName, setLuckyColorCode }) {
             <p>Lucky Color</p>
             <p>{hex}</p>
             <p>{colorName}</p>
+            <WheelWrapper className="wheel">
+              <Wheel
+                color={hsva}
+                onChange={(color) => setHsva({ ...hsva, ...color.hsva })}
+              />
+            </WheelWrapper>
           </WhiteDiv>
         </PanetoneWrapper>
       </ColorPickerWrapper>
-      <WheelWrapper className="wheel">
-        <Wheel
-          color={hsva}
-          onChange={(color) => setHsva({ ...hsva, ...color.hsva })}
-        />
-      </WheelWrapper>
     </>
   );
 }

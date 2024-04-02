@@ -532,8 +532,8 @@ function Product() {
           }),
         }
       );
-      setStar({ number: 0, clicked: false, clickedNumber: 0 });
-      setComment('');
+      // setStar({ number: 0, clicked: false, clickedNumber: 0 });
+      // setComment('');
       //const data = await response.json();
       setIsPurchased(true);
       getcommentData();
