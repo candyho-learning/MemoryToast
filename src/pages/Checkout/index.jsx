@@ -7,6 +7,7 @@ import { CartContext } from "../../context/cartContext";
 import api from "../../utils/api";
 import tappay from "../../utils/tappay";
 import Cart from "./Cart";
+import LoginWindow from "../../components/LoginWindow";
 
 const Wrapper = styled.div`
   margin: 0 auto;
@@ -381,115 +382,128 @@ function Checkout() {
     }
   }
 
-  return (
-    <Wrapper>
-      <Cart />
-      <GrayBlock>
-        <Label>配送國家</Label>
-        <Select>
-          <option>臺灣及離島</option>
-        </Select>
-        <Label>付款方式</Label>
-        <Select>
-          <option>信用卡付款</option>
-        </Select>
-      </GrayBlock>
-      <Note>
-        ※ 提醒您：
-        <br />● 選擇宅配-請填寫正確收件人資訊，避免包裹配送不達
-        <br />● 選擇超商-請填寫正確收件人姓名(與證件相符)，避免無法領取
-      </Note>
-      <form ref={formRef}>
-        <FormFieldSet>
-          <FormLegend>訂購資料</FormLegend>
-          {formInputs.map((input) => (
-            <FormGroup key={input.key}>
-              <FormLabel>{input.label}</FormLabel>
-              <FormControl
-                value={recipient[input.key]}
-                onChange={(e) =>
-                  setRecipient({ ...recipient, [input.key]: e.target.value })
-                }
-                invalid={invalidFields.includes(input.key)}
-              />
-              {input.text && <FormText>{input.text}</FormText>}
-            </FormGroup>
-          ))}
-          <FormGroup>
-            <FormLabel>配送時間</FormLabel>
-            {timeOptions.map((option) => (
-              <FormCheck key={option.value}>
-                <FormCheckInput
-                  type="radio"
-                  checked={recipient.time === option.value}
-                  onChange={(e) => {
-                    if (e.target.checked)
-                      setRecipient({ ...recipient, time: option.value });
-                  }}
-                />
-                <FormCheckLabel>{option.label}</FormCheckLabel>
-              </FormCheck>
-            ))}
-          </FormGroup>
-        </FormFieldSet>
-        <FormFieldSet>
-          <FormLegend>付款資料</FormLegend>
-          <FormGroup>
-            <FormLabel>信用卡號碼</FormLabel>
-            <FormControl as="div" ref={cardNumberRef} />
-          </FormGroup>
-          <FormGroup>
-            <FormLabel>有效期限</FormLabel>
-            <FormControl as="div" ref={cardExpirationDateRef} />
-          </FormGroup>
-          <FormGroup>
-            <FormLabel>安全碼</FormLabel>
-            <FormControl as="div" ref={cardCCVRef} />
-          </FormGroup>
-        </FormFieldSet>
-        <FormFieldSet>
-          <FormLegend>優惠券</FormLegend>
-          <FormLabel>{`優惠券數量: ${user.coupon}`}</FormLabel>
-          <FormCheckInput
-            type="checkbox"
-            value={isUseCoupon}
-            onClick={() => {
-              setIsUseCoupon((el) => !el);
-            }}
-          />
-          <FormCheckLabel>使用優惠券？</FormCheckLabel>
-        </FormFieldSet>
-      </form>
-      <SubtotalPrice>
-        <PriceName>總金額</PriceName>
-        <Currency>NT.</Currency>
-        <PriceValue>{subtotal}</PriceValue>
-      </SubtotalPrice>
-      <ShippingPrice>
-        <PriceName>運費</PriceName>
-        <Currency>NT.</Currency>
-        <PriceValue>{freight}</PriceValue>
-      </ShippingPrice>
-      {isUseCoupon && (
-        <ShippingPrice>
-          <PriceName>優惠券折扣</PriceName>
-          <Currency>NT.</Currency>
-          <PriceValue>{-Math.floor(subtotal * 0.5)}</PriceValue>
-        </ShippingPrice>
-      )}
+  if (!isLogin) {
+    return <LoginWindow />;
+  }
 
-      <TotalPrice>
-        <PriceName>應付金額</PriceName>
-        <Currency>NT.</Currency>
-        <PriceValue>
-          {subtotal + freight - (isUseCoupon ? Math.floor(subtotal * 0.5) : 0)}
-        </PriceValue>
-      </TotalPrice>
-      <Button loading={loading} onClick={checkout}>
-        確認付款
-      </Button>
-    </Wrapper>
-  );
+  if (isLogin)
+    return (
+      <Wrapper>
+        <Cart />
+        <GrayBlock>
+          <Label>配送國家</Label>
+          <Select>
+            <option>臺灣及離島</option>
+          </Select>
+          <Label>付款方式</Label>
+          <Select>
+            <option>信用卡付款</option>
+          </Select>
+        </GrayBlock>
+        <Note>
+          ※ 提醒您：
+          <br />● 選擇宅配-請填寫正確收件人資訊，避免包裹配送不達
+          <br />● 選擇超商-請填寫正確收件人姓名(與證件相符)，避免無法領取
+        </Note>
+        <form ref={formRef}>
+          <FormFieldSet>
+            <FormLegend>訂購資料</FormLegend>
+            {formInputs.map((input) => (
+              <FormGroup key={input.key}>
+                <FormLabel>{input.label}</FormLabel>
+                <FormControl
+                  value={recipient[input.key]}
+                  onChange={(e) =>
+                    setRecipient({ ...recipient, [input.key]: e.target.value })
+                  }
+                  invalid={invalidFields.includes(input.key)}
+                />
+                {input.text && <FormText>{input.text}</FormText>}
+              </FormGroup>
+            ))}
+            <FormGroup>
+              <FormLabel>配送時間</FormLabel>
+              {timeOptions.map((option) => (
+                <FormCheck key={option.value}>
+                  <FormCheckInput
+                    type="radio"
+                    checked={recipient.time === option.value}
+                    onChange={(e) => {
+                      if (e.target.checked)
+                        setRecipient({ ...recipient, time: option.value });
+                    }}
+                  />
+                  <FormCheckLabel>{option.label}</FormCheckLabel>
+                </FormCheck>
+              ))}
+            </FormGroup>
+          </FormFieldSet>
+          <FormFieldSet>
+            <FormLegend>付款資料</FormLegend>
+            <FormGroup>
+              <FormLabel>信用卡號碼</FormLabel>
+              <FormControl as="div" ref={cardNumberRef} />
+            </FormGroup>
+            <FormGroup>
+              <FormLabel>有效期限</FormLabel>
+              <FormControl as="div" ref={cardExpirationDateRef} />
+            </FormGroup>
+            <FormGroup>
+              <FormLabel>安全碼</FormLabel>
+              <FormControl as="div" ref={cardCCVRef} />
+            </FormGroup>
+          </FormFieldSet>
+          <FormFieldSet>
+            <FormLegend>優惠券</FormLegend>
+            <FormLabel
+              style={{ marginTop: "10px" }}
+            >{`優惠券數量: ${user.coupon}`}</FormLabel>
+            <FormCheckInput
+              type="checkbox"
+              value={isUseCoupon}
+              onClick={() => {
+                setIsUseCoupon((el) => !el);
+              }}
+            />
+            {user.coupon > 0 && (
+              <FormCheckLabel style={{ marginTop: "20px" }}>
+                使用優惠券？
+              </FormCheckLabel>
+            )}
+          </FormFieldSet>
+        </form>
+        <SubtotalPrice>
+          <PriceName>總金額</PriceName>
+          <Currency>NT.</Currency>
+          <PriceValue>{subtotal}</PriceValue>
+        </SubtotalPrice>
+        <ShippingPrice>
+          <PriceName>運費</PriceName>
+          <Currency>NT.</Currency>
+          <PriceValue>{freight}</PriceValue>
+        </ShippingPrice>
+        {isUseCoupon && (
+          <ShippingPrice>
+            <PriceName>優惠券折扣</PriceName>
+            <Currency>NT.</Currency>
+            <PriceValue>{-Math.floor(subtotal * 0.5)}</PriceValue>
+          </ShippingPrice>
+        )}
+
+        <TotalPrice>
+          <PriceName>應付金額</PriceName>
+          <Currency>NT.</Currency>
+          <PriceValue>
+            {subtotal +
+              freight -
+              (isUseCoupon ? Math.floor(subtotal * 0.5) : 0)}
+          </PriceValue>
+        </TotalPrice>
+        <Button loading={loading} onClick={checkout}>
+          確認付款
+        </Button>
+      </Wrapper>
+    );
 }
 
 export default Checkout;
