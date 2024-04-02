@@ -1,12 +1,12 @@
-import { useEffect, useState, useRef } from 'react';
-import { useParams } from 'react-router-dom';
-import { useContext } from 'react';
-import { AuthContext } from '../../context/authContext';
-import styled from 'styled-components';
-import api from '../../utils/api';
-import ProductVariants from './ProductVariants';
-import LoginWindow from '../../components/LoginWindow';
-import ReactLoading from 'react-loading';
+import { useEffect, useState, useRef } from "react";
+import { useParams } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "../../context/authContext";
+import styled from "styled-components";
+import api from "../../utils/api";
+import ProductVariants from "./ProductVariants";
+import LoginWindow from "../../components/LoginWindow";
+import ReactLoading from "react-loading";
 
 const Wrapper = styled.div`
   max-width: 960px;
@@ -26,15 +26,13 @@ const Wrapper = styled.div`
 `;
 
 const MainImage = styled.img`
-  width: 460px;
-
   @media screen and (max-width: 1279px) {
     width: 100%;
   }
 `;
 
 const Details = styled.div`
-  margin-left: 42px;
+  margin-top: 20px;
   flex-grow: 1;
 
   @media screen and (max-width: 1279px) {
@@ -47,7 +45,6 @@ const Title = styled.div`
   font-size: 32px;
   letter-spacing: 6.4px;
   color: #3f3a3a;
-  width: 400px;
   white-space: wrap;
   @media screen and (max-width: 1279px) {
     line-height: 24px;
@@ -151,7 +148,7 @@ const StoryTitle = styled.div`
   }
 
   &::after {
-    content: '';
+    content: "";
     height: 1px;
     flex-grow: 1;
     background-color: #3f3a3a;
@@ -271,14 +268,14 @@ const CommentWrapper = styled.div`
   }
 
   .commentStar {
-    background-image: url('/icons/star.png');
+    background-image: url("/icons/star.png");
   }
 
   .commentEmptyStar {
     position: absolute;
     top: 0;
     z-index: -1;
-    background-image: url('/icons/empty_star2.png');
+    background-image: url("/icons/empty_star2.png");
   }
 
   .commentStar:hover {
@@ -408,9 +405,9 @@ function Product() {
     clicked: false,
     clickedNumber: 0,
   });
-  const [comment, setComment] = useState('');
+  const [comment, setComment] = useState("");
   const [commentIndex, setCommentIndex] = useState(3);
-  const [errMsg, setErrMsg] = useState('');
+  const [errMsg, setErrMsg] = useState("");
   const [isPurchased, setIsPurchased] = useState();
 
   const starTimer = useRef(null);
@@ -421,18 +418,18 @@ function Product() {
         `https://chouyu.site/api/1.0/comments?id=${id}`,
         {
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
         }
       );
       return await response.json();
       console.log(data);
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error("Error fetching data:", error);
     }
   };
   const checkPurchased = (commentData) => {
-    const userProfileString = localStorage.getItem('userProfile');
+    const userProfileString = localStorage.getItem("userProfile");
     const userProfile = JSON.parse(userProfileString);
     const userId = userProfile.id;
     const findComments = commentData.filter(
@@ -506,23 +503,23 @@ function Product() {
       setCheckLogin(true);
     }
     if (star.number === 0) {
-      setErrMsg('記得先給評分哦!');
+      setErrMsg("記得先給評分哦!");
       return;
     }
     if (!comment) {
-      setErrMsg('記得留言再送出評論哦!');
+      setErrMsg("記得留言再送出評論哦!");
       return;
     }
-    const userProfile = JSON.parse(localStorage.getItem('userProfile'));
+    const userProfile = JSON.parse(localStorage.getItem("userProfile"));
     const userId = userProfile.id;
     console.log(typeof userId);
     try {
       const response = await fetch(
         `https://chouyu.site/api/1.0/comment/create`,
         {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify({
             userId: userId,
@@ -533,14 +530,14 @@ function Product() {
         }
       );
       setStar({ number: 0, clicked: false, clickedNumber: 0 });
-      setComment('');
+      setComment("");
       //const data = await response.json();
       setIsPurchased(true);
       getcommentData();
-      alert('發表評論成功');
+      alert("發表評論成功");
       return data;
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error("Error fetching data:", error);
       throw error;
     }
   };
@@ -548,8 +545,8 @@ function Product() {
     setCommentIndex((prevState) => prevState + 3);
   };
   const submitComment = (e) => {
-    if (errMsg === '記得留言再送出評論哦') {
-      setErrMsg('');
+    if (errMsg === "記得留言再送出評論哦") {
+      setErrMsg("");
     }
     setComment(e.target.value);
   };
@@ -630,7 +627,7 @@ function Product() {
                           <div
                             key={index}
                             className="commentStar"
-                            style={{ opacity: index < star.number ? '1' : 0 }}
+                            style={{ opacity: index < star.number ? "1" : 0 }}
                             onMouseEnter={() => {
                               hoverStar(index);
                             }}
@@ -641,8 +638,8 @@ function Product() {
                                 clicked: true,
                                 clickedNumber: index + 1,
                               });
-                              if (errMsg === '記得先給評分哦!') {
-                                setErrMsg('');
+                              if (errMsg === "記得先給評分哦!") {
+                                setErrMsg("");
                               }
                             }}
                           ></div>
@@ -658,7 +655,7 @@ function Product() {
                 </div>
 
                 <button className="commentButton" onClick={sendReview}>
-                  {isLogin ? '發表評論' : '請先登入'}
+                  {isLogin ? "發表評論" : "請先登入"}
                 </button>
               </div>
               <TextWrapper>
@@ -692,8 +689,8 @@ function Product() {
                           <img
                             src={
                               comment.rate >= index + 1
-                                ? '/icons/star.png'
-                                : '/icons/empty_star2.png'
+                                ? "/icons/star.png"
+                                : "/icons/empty_star2.png"
                             }
                             alt=""
                           />
