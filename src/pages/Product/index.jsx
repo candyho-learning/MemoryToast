@@ -529,8 +529,8 @@ function Product() {
           }),
         }
       );
-      setStar({ number: 0, clicked: false, clickedNumber: 0 });
-      setComment("");
+      // setStar({ number: 0, clicked: false, clickedNumber: 0 });
+      // setComment('');
       //const data = await response.json();
       setIsPurchased(true);
       getcommentData();
@@ -545,7 +545,7 @@ function Product() {
     setCommentIndex((prevState) => prevState + 3);
   };
   const submitComment = (e) => {
-    if (errMsg === "記得留言再送出評論哦") {
+    if (errMsg === "記得留言再送出評論哦!") {
       setErrMsg("");
     }
     setComment(e.target.value);
