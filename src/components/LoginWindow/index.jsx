@@ -47,7 +47,9 @@ export const LoginBox = styled.div`
       margin-top: 15px;
     }
   }
-
+  .color-picker-area{
+    height: 100%;
+  }
   .right {
     padding: 40px;
     text-align: center;

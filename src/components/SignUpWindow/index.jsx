@@ -1,29 +1,33 @@
-import { useContext, useEffect, useState } from "react";
-import styled from "styled-components";
+import { useContext, useEffect, useState } from 'react';
+import styled from 'styled-components';
 import {
   BackgroundMask,
   LoginBox,
   Input,
   FormTitle,
   Button,
-} from "../LoginWindow";
+} from '../LoginWindow';
 
-import ColorPicker from "../ColorPicker";
-import { AuthContext } from "../../context/authContext";
+import ColorPicker from '../ColorPicker';
+import { AuthContext } from '../../context/authContext';
 
 const INITIAL_FORM_FIELDS = {
-  name: "",
-  email: "",
-  password: "",
-  birthday: "",
-  colorCode: "",
-  gender: "",
+  name: '',
+  email: '',
+  password: '',
+  birthday: '',
+  colorCode: '',
+  gender: '',
 };
+
+const NewloginBox = styled(LoginBox)`
+  height: 630px;
+`;
 
 const DynamicBackgroundMask = styled(BackgroundMask)`
   background: radial-gradient(
     circle,
-    ${(props) => props.color || "#837568"} 10%,
+    ${(props) => props.color || '#837568'} 10%,
     #313538
   );
 `;
@@ -43,7 +47,7 @@ const SuccessMessage = styled.div`
   text-align: center;
   background: radial-gradient(
     circle,
-    ${(props) => props.color || "#837568"} 10%,
+    ${(props) => props.color || '#837568'} 10%,
     #313538
   );
   height: 90vh;
@@ -71,23 +75,23 @@ const Link = styled.a`
 export default function SignUpWindow() {
   const [formState, setFormState] = useState(INITIAL_FORM_FIELDS);
   const [luckyColorCode, setLuckyColorCode] = useState();
-  const [luckyColorName, setLuckyColorName] = useState("");
+  const [luckyColorName, setLuckyColorName] = useState('');
   const [showColorPicker, setShowColorPicker] = useState(false);
   const { login, isLogin, user } = useContext(AuthContext);
 
   const FORM_FIELDS = [
-    { name: "name", type: "text", placeholder: "Your Full Name" },
-    { name: "email", type: "email", placeholder: "Your Email" },
+    { name: 'name', type: 'text', placeholder: 'Your Full Name' },
+    { name: 'email', type: 'email', placeholder: 'Your Email' },
     {
-      name: "password",
-      type: "password",
-      placeholder: "At least 6 characters",
+      name: 'password',
+      type: 'password',
+      placeholder: 'At least 6 characters',
     },
-    { name: "birthday", type: "date" },
+    { name: 'birthday', type: 'date' },
     {
-      name: "colorCode",
-      type: "text",
-      placeholder: "Your Lucky Color",
+      name: 'colorCode',
+      type: 'text',
+      placeholder: 'Your Lucky Color',
       value: { luckyColorName },
     },
   ];
@@ -111,24 +115,24 @@ export default function SignUpWindow() {
       gender: formState.gender,
     };
     try {
-      const response = await fetch("https://chouyu.site/api/1.0/user/signup", {
+      const response = await fetch('https://chouyu.site/api/1.0/user/signup', {
         body: JSON.stringify(signUpData),
         headers: new Headers({
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         }),
-        method: "POST",
+        method: 'POST',
       });
       if (!response.ok) {
-        throw new error("sign up failed");
+        throw new error('sign up failed');
       }
       console.log(response);
       const data = await response.json();
       console.log(data);
       login({
-        provider: "native",
+        provider: 'native',
         email: formState.email,
         password: formState.password,
-        access_token: "",
+        access_token: '',
       });
     } catch (err) {
       console.error(err);
@@ -151,11 +155,11 @@ export default function SignUpWindow() {
   }
   return (
     <DynamicBackgroundMask color={luckyColorCode}>
-      <LoginBox>
+      <NewloginBox>
         <div className="left">
           <div
             className="text-content"
-            style={{ display: showColorPicker ? "none" : "block" }}
+            style={{ display: showColorPicker ? 'none' : 'block' }}
           >
             <FormTitle>"Color is the language of fashion."</FormTitle>
             <p>
@@ -165,7 +169,7 @@ export default function SignUpWindow() {
           </div>
           <div
             className="color-picker-area"
-            style={{ display: showColorPicker ? "block" : "none" }}
+            style={{ display: showColorPicker ? 'block' : 'none' }}
           >
             <ColorPicker
               setColorName={setLuckyColorName}
@@ -173,7 +177,12 @@ export default function SignUpWindow() {
               setLuckyColorCode={setLuckyColorCode}
             />
             <button
-              style={{ height: "30px", marginTop: "30px", marginLeft: "240px" }}
+              style={{
+                width: '100%',
+                height: '30px',
+                marginTop: '8px',
+                marginLeft: '0px',
+              }}
               onClick={() => {
                 setShowColorPicker(false);
               }}
@@ -184,7 +193,7 @@ export default function SignUpWindow() {
         </div>
         <div className="right">
           {/* TODO: Add form action: login API with username and password */}
-          <form onSubmit={handleSubmit} style={{ marginTop: "20px" }}>
+          <form onSubmit={handleSubmit} style={{ marginTop: '20px' }}>
             <h3>Hi! JOIN US</h3>
             {FORM_FIELDS.map((item) => (
               <Input
@@ -192,15 +201,15 @@ export default function SignUpWindow() {
                 name={item.name}
                 placeholder={item.placeholder}
                 onChange={
-                  item.name === "colorCode" ? () => {} : handleFormChange
+                  item.name === 'colorCode' ? () => {} : handleFormChange
                 }
                 value={
-                  item.name === "colorCode"
+                  item.name === 'colorCode'
                     ? luckyColorCode
                     : formState[item.name]
                 }
                 onFocus={
-                  item.name === "colorCode"
+                  item.name === 'colorCode'
                     ? () => {
                         setShowColorPicker(true);
                       }
@@ -222,7 +231,7 @@ export default function SignUpWindow() {
         </div>
 
         {/* Color picker */}
-      </LoginBox>
+      </NewloginBox>
     </DynamicBackgroundMask>
   );
 }

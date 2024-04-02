@@ -243,7 +243,7 @@ const categories = [
 function Header() {
   const [inputValue, setInputValue] = useState('');
   const { user } = useContext(AuthContext)
-  const { cartCount } = useContext(CartContext);
+  const { cartCount, } = useContext(CartContext);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const category = searchParams.get('category');
