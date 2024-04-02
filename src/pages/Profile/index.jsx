@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import ReactLoading from "react-loading";
 import styled from "styled-components";
 import { AuthContext } from "../../context/authContext";
@@ -131,6 +132,7 @@ const Loading = styled(ReactLoading)`
 `;
 
 function Profile() {
+  const navigate = useNavigate();
   const { user, isLogin, login, logout, loading } = useContext(AuthContext);
   const servicesArr = [
     { service: "地址", path: "Address" },
@@ -168,8 +170,13 @@ function Profile() {
                 <p>{`Name: ${user.name}`}</p>
                 <p>{`Lucky color: ${user.color}`}</p>
                 <p>{`Coupons: ${user.coupon}`}</p>
-                <button class="blobby-button">
-                  Change lucky color{" "}
+                <button
+                  class="blobby-button"
+                  onClick={() => {
+                    navigate("/myluckycolor");
+                  }}
+                >
+                  My Lucky Color Page{" "}
                   <span class="inner">
                     <span class="blobs">
                       <span class="blob"></span>
